@@ -5,6 +5,7 @@ import {
   get_bikes_by_model,
   get_tour_details,
   get_all_tours,
+  get_tours_country,
 } from "../controller/usercontroller.js";
 
 const router = Router();
@@ -15,5 +16,6 @@ router.post("/book-tour/:tourId", book_tour);
 router.get("/bikes/model/:model", get_bikes_by_model);
 router.get("/tour/:id", get_tour_details);
 router.get("/tours", get_all_tours);
+router.get("/tour/:country", get_tours_country);
 
 export default router;

@@ -4,7 +4,16 @@ import Nepaldropdownitem from "./Nav_dropdown/Nepaldropdownitem";
 import Indiadropdownitem from "./Nav_dropdown/Indiadropdownitem";
 
 import "./Navbar.scss";
+import { Link } from "react-router-dom";
+import { useTourStore } from "../../Store/useTourStore";
 const NavBar = () => {
+  const { getTourNepal, getTourIndia } = useTourStore();
+
+  useEffect(() => {
+    getTourNepal();
+    getTourIndia();
+  }, []);
+
   const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset);
   const [visible, setVisible] = useState(true);
 
@@ -23,22 +32,22 @@ const NavBar = () => {
     <nav className={`navbar-wrapper ${visible ? "" : "hide-navbar"}`}>
       <div className="navbar bg-white/30 backdrop-blur-sm border-0 px-8 py-5 font-bebas flex justify-center sticky top-0 z-99">
         <div className="absolute left-5 top-1 bottom-1 flex items-center h-15 px-4">
-          <a className="text-lg cursor-pointer">
+          <Link to="/" className="text-lg cursor-pointer">
             <img src={logo} alt="logo" className="h-15" />
-          </a>
+          </Link>
         </div>
 
         {/* Desktop Navbar */}
         <div className="md:flex gap-16 font-bebas-neue text-xl items-center  hidden ">
-          <a
-            href="#home"
+          <Link
+            to={"/"}
             className="flex cursor-pointer"
             style={{ color: "black" }}
             onMouseEnter={(e) => (e.target.style.color = "#fdb913")}
             onMouseLeave={(e) => (e.target.style.color = "black")}
           >
             Home
-          </a>
+          </Link>
 
           <div className="dropdown dropdown-center">
             <div
@@ -78,15 +87,15 @@ const NavBar = () => {
           >
             Bhutan
           </a>
-          <a
-            href="#Aboutus"
+          <Link
+            to={"/aboutus"}
             className="flex cursor-pointer"
             style={{ color: "black" }}
             onMouseEnter={(e) => (e.target.style.color = "#fdb913")}
             onMouseLeave={(e) => (e.target.style.color = "black")}
           >
             About Us
-          </a>
+          </Link>
           <a
             href="#Contactus"
             className="flex cursor-pointer"
