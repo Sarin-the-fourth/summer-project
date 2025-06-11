@@ -1,5 +1,3 @@
-import logo from "./../../public/wtalogo1.ico";
-
 const Footer = () => {
   return (
     <div>
@@ -9,7 +7,7 @@ const Footer = () => {
       >
         <aside>
           <img
-            src={logo}
+            src="./wtalogo1.ico"
             alt="Company Logo"
             width="60"
             height="60"

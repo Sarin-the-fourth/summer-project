@@ -5,31 +5,32 @@ import { axiosInstance } from "../assets/axios";
 export const useTourStore = create((set) => ({
   toursofNepal: [],
   toursofIndia: [],
-  loading: true,
+  loadingNepal: false,
+  loadingIndia: true,
 
   getTourNepal: async () => {
     try {
-      set({ loading: true });
-      const res = await axiosInstance.get("/user/tour/Nepal");
+      set({ loadingNepal: true });
+      const res = await axiosInstance.get("/user/tours/Nepal");
 
-      set({ toursofNepal: res.data.tours });
+      set({ toursofNepal: res.data.tours || [] });
     } catch (error) {
       console.log(error);
     } finally {
-      set({ loading: false });
+      set({ loadingNepal: false });
     }
   },
 
   getTourIndia: async () => {
     try {
-      set({ loading: true });
-      const res = await axiosInstance.get("/user/tour/India");
+      set({ loadingIndia: true });
+      const res = await axiosInstance.get("/user/tours/India");
 
-      set({ toursofIndia: res.data.tours });
+      set({ toursofIndia: res.data.tours || [] });
     } catch (error) {
       console.log(error);
     } finally {
-      set({ loading: false });
+      set({ loadingIndia: false });
     }
   },
 }));

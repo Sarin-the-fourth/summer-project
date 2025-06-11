@@ -4,15 +4,8 @@ import Indiadropdownitem from "./Nav_dropdown/Indiadropdownitem";
 
 import "./Navbar.scss";
 import { Link } from "react-router-dom";
-import { useTourStore } from "../../Store/useTourStore";
+
 const NavBar = () => {
-  const { getTourNepal, getTourIndia } = useTourStore();
-
-  useEffect(() => {
-    getTourNepal();
-    getTourIndia();
-  }, []);
-
   const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset);
   const [visible, setVisible] = useState(true);
 
