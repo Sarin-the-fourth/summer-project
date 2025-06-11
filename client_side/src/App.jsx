@@ -3,8 +3,9 @@ import Footer from "./Components/Footer";
 import HomeLayout from "./Components/HomeLayout/HomeLayout";
 import NavBar from "./Components/Navbar/Navbar";
 import { Bounce, ToastContainer } from "react-toastify";
-import AboutUs from "./Components/AbotUsLayout/AboutUs";
+import AboutUs from "./Components/AboutUsLayout/AboutUs";
 import AdminLogin from "./Components/AdminLoginLayout/AdminLogin";
+import Contact from "./Components/Contact";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<HomeLayout />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/login" element={<AdminLogin />} />
+        <Route path="/contactus" element={<Contact />} />
       </Routes>
       <Footer />
       <ToastContainer

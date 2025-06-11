@@ -96,15 +96,16 @@ const NavBar = () => {
           >
             About Us
           </Link>
-          <a
-            href="#Contactus"
+
+          <Link
+            to="/contactus"
             className="flex cursor-pointer"
             style={{ color: "black" }}
             onMouseEnter={(e) => (e.target.style.color = "#fdb913")}
             onMouseLeave={(e) => (e.target.style.color = "black")}
           >
             Contact
-          </a>
+          </Link>
         </div>
 
         {/* Mobile Navbar */}

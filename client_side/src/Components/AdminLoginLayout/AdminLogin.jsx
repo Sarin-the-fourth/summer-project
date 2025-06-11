@@ -19,27 +19,34 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <form className="flex flex-col" onSubmit={handleSubmit}>
-        email
-        <input
-          type="email"
-          name="email"
-          placeholder="Enter your email"
-          value={formData.email}
-          onChange={handleFormData}
-        />
-        password
-        <input
-          type="password"
-          name="password"
-          placeholder="Enter your password"
-          value={formData.password}
-          onChange={handleFormData}
-        />
-        <input type="submit" value="submit" />
-      </form>
-    </div>
+    <section className="admin-login">
+      <div className="flex min-h-screen items-center justify-center">
+        <fieldset
+          className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4"
+          on
+          onSubmit={handleSubmit}
+        >
+          <legend className="fieldset-legend">Login</legend>
+
+          <label className="label">Email</label>
+          <input
+            type="email"
+            className="input"
+            placeholder="Enter your email"
+          />
+
+          <label className="label">Password</label>
+          <input
+            type="password"
+            className="input"
+            placeholder="Enter your assword"
+          />
+
+          <button className="btn btn-neutral mt-4">Login</button>
+        </fieldset>
+        ;
+      </div>
+    </section>
   );
 };
 
