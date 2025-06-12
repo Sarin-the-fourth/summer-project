@@ -13,7 +13,7 @@ const Contact = () => {
       <div className="absolute inset-0 bg-black opacity-35"></div>
       <div className="m-20 relative text-white">
         <h1 className="text-4xl font-bold mb-4 uppercase mt-10">
-          A quick Enquiry
+          A quick Inquiry
         </h1>
         <div className="backdrop-blur-md bg-white/20 p-8 shadow-lg w-full max-w-md">
           <form>
@@ -156,7 +156,7 @@ const Contact = () => {
               Self-Guided
             </div>
 
-            {/*Tour Enquiry */}
+            {/*Tour Inquiry */}
             <label className="font-montserrat font-light text-md">
               <p className="mt-5">Tour Inquiry Details</p>
             </label>

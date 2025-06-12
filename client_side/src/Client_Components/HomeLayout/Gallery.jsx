@@ -23,6 +23,7 @@ const Gallery = () => {
         >
           <img src={uppermustang2} alt="photo" />
         </div>
+
         <div
           data-location="Upper Mustang"
           onClick={() => openLightbox(uppermustang3)}
@@ -30,6 +31,7 @@ const Gallery = () => {
         >
           <img src={uppermustang3} alt="photo" />
         </div>
+
         <div
           data-location="Upper Mustang"
           onClick={() => openLightbox(uppermustang2)}
@@ -37,6 +39,7 @@ const Gallery = () => {
         >
           <img src={uppermustang2} alt="photo" />
         </div>
+
         <div
           data-location="Upper Mustang"
           onClick={() => openLightbox(uppermustang3)}
@@ -44,6 +47,7 @@ const Gallery = () => {
         >
           <img src={uppermustang3} alt="photo" />
         </div>
+
         <div
           data-location="Upper Mustang"
           onClick={() => openLightbox(uppermustang2)}
@@ -51,6 +55,7 @@ const Gallery = () => {
         >
           <img src={uppermustang2} alt="photo" />
         </div>
+
         <div
           data-location="Upper Mustang"
           onClick={() => openLightbox(uppermustang3)}
@@ -58,6 +63,7 @@ const Gallery = () => {
         >
           <img src={uppermustang3} alt="photo" />
         </div>
+
         <div
           data-location="Upper Mustang"
           onClick={() => openLightbox(uppermustang2)}
@@ -65,6 +71,7 @@ const Gallery = () => {
         >
           <img src={uppermustang2} alt="photo" />
         </div>
+
         <div
           data-location="Upper Mustang"
           onClick={() => openLightbox(uppermustang3)}
@@ -72,6 +79,7 @@ const Gallery = () => {
         >
           <img src={uppermustang3} alt="photo" />
         </div>
+
         <div
           data-location="Upper Mustang"
           onClick={() => openLightbox(uppermustang2)}

@@ -1,0 +1,45 @@
+.Gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+  /* Add padding to left, right, and bottom */
+
+  div {
+    position: relative;
+
+    img {
+      width: 100%;
+      height: auto;
+      transition: transform 0.3s;
+    }
+
+    &::after {
+      content: attr(data-location);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      color: #fdb913;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    &:hover img {
+      transform: scale(1.05);
+    }
+
+    &:hover::after {
+      opacity: 1;
+    }
+  }
+}

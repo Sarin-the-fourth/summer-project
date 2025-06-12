@@ -177,7 +177,7 @@ export const get_tours_country = async (req, res) => {
     const tours = await Tours.find({ country }).select(
       "name description location price numberofdays availability country itinerary"
     );
-    return res.status(200).json(tours);
+    return res.status(200).json({ tours });
   } catch (error) {
     console.log("Error in get_all_tours:", error);
     return res.status(500).json({
