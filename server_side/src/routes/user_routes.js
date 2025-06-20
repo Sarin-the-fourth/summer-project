@@ -6,6 +6,7 @@ import {
   get_tour_details,
   get_all_tours,
   get_tours_country,
+  getTourWithItinerary,
 } from "../controller/usercontroller.js";
 
 const router = Router();
@@ -17,5 +18,7 @@ router.get("/bikes/model/:model", get_bikes_by_model);
 router.get("/tour/:id", get_tour_details);
 router.get("/tours", get_all_tours);
 router.get("/tours/:country", get_tours_country);
+
+router.get("/tour-itinerary/:tourId", getTourWithItinerary);
 
 export default router;

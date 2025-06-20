@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuthStore } from "../../Store/useAuthStore";
+import { useNavigate } from "react-router-dom";
 
 const AdminLogin = () => {
   const { login } = useAuthStore();
@@ -12,10 +13,14 @@ const AdminLogin = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
-    login(formData);
+    const success = await login(formData);
+    if (success) {
+      navigate("/admin");
+    }
   };
 
   return (
@@ -23,10 +28,10 @@ const AdminLogin = () => {
       <div className="flex min-h-screen items-center justify-center">
         <div className="relative">
           <img
-            src="./wtalogo1.ico"
+            src="/wtalogo1.ico"
             className="w-20 h-20 absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
           />
-          <fieldset
+          <form
             className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-10 pt-14"
             onSubmit={handleSubmit}
           >
@@ -42,6 +47,9 @@ const AdminLogin = () => {
                 required
                 className="input mb-5"
                 placeholder="Enter your email"
+                name="email"
+                value={formData.email}
+                onChange={handleFormData}
               />
 
               <input
@@ -49,6 +57,9 @@ const AdminLogin = () => {
                 required
                 className="input"
                 placeholder="Enter your password"
+                name="password"
+                value={formData.password}
+                onChange={handleFormData}
               />
             </div>
 
@@ -58,7 +69,7 @@ const AdminLogin = () => {
             >
               Login
             </button>
-          </fieldset>
+          </form>
         </div>
       </div>
     </section>

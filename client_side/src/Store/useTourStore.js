@@ -8,6 +8,10 @@ export const useTourStore = create((set) => ({
   loadingNepal: false,
   loadingIndia: true,
 
+  tour: null,
+  itinerary: [],
+  loadingTours: true,
+
   getTourNepal: async () => {
     try {
       set({ loadingNepal: true });
@@ -31,6 +35,20 @@ export const useTourStore = create((set) => ({
       console.log(error);
     } finally {
       set({ loadingIndia: false });
+    }
+  },
+
+  getTourById: async (id) => {
+    try {
+      set({ loadingTours: true });
+      const res = await axiosInstance.get(`/user/tour-itinerary/${id}`);
+      console.log(res.data);
+
+      set({ tour: res.data.tour, itinerary: res.data.itinerary });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      set({ loadingTours: false });
     }
   },
 }));

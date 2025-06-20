@@ -3,96 +3,214 @@ import Bike from "../models/bikemodel.js";
 import Itinerary from "../models/itinerarymodel.js";
 import Booking from "../models/bookingmodel.js";
 import sendMail from "../utils/sendMail.js";
+import cloudinary from "../utils/CloudinaryConnect.js";
 
-export const add_tours = async (req, res) => {
+export const createTourWithItinerary = async (req, res) => {
   try {
+    // Extract tour data from request body
     const {
       name,
       description,
       location,
+      introduction,
       price,
+      altitude,
       numberofdays,
       country,
-      availability,
+      availability = true,
+      cover_image,
+      gallery_images,
+      itinerary,
     } = req.body;
 
+    // Validate required fields
     if (
       !name ||
       !description ||
       !location ||
+      !introduction ||
       !price ||
+      !altitude ||
       !numberofdays ||
       !country ||
-      availability === undefined
+      !cover_image ||
+      !itinerary
     ) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
-    const existingtour = await Tour.findOne({ name, location });
-    if (existingtour) {
-      return res.status(409).json({
-        message: "Tour already exists",
+      return res.status(400).json({
+        success: false,
+        message:
+          "All required fields must be provided, including cover image and itinerary",
       });
     }
 
-    const addTour = new Tour({
+    // Validate country
+    if (!["Nepal", "India", "Bhutan"].includes(country)) {
+      return res.status(400).json({
+        success: false,
+        message: "Country must be Nepal, India, or Bhutan",
+      });
+    }
+
+    // Check if tour with same name or location already exists
+    const existingTour = await Tour.findOne({
+      $or: [{ name }, { location }],
+    });
+
+    if (existingTour) {
+      return res.status(409).json({
+        success: false,
+        message: "Tour with this name or location already exists",
+      });
+    }
+
+    // Prepare tour data
+    const tourData = {
       name,
       description,
       location,
-      price,
-      numberofdays,
+      introduction,
+      price: Number(price),
+      altitude: Number(altitude),
+      numberofdays: Number(numberofdays),
       country,
-      availability,
-    });
+      availability: availability === "true" || availability === true,
+    };
 
-    await addTour.save();
+    // Upload cover image to Cloudinary
+    if (cover_image && cover_image.startsWith("data:image")) {
+      try {
+        const uploadResponse = await cloudinary.uploader.upload(cover_image, {
+          folder: "Tours/CoverImages",
+          quality: "auto:best",
+          format: "auto",
+          eager: [
+            {
+              width: 1200,
+              crop: "scale", // Maintain aspect ratio
+              quality: "auto:best",
+            },
+          ],
+          transformation: [{ quality: "auto:best" }, { fetch_format: "auto" }],
+        });
+
+        // Store both original and transformed versions
+        tourData.cover_image = {
+          original: uploadResponse.secure_url,
+          thumbnail: uploadResponse.eager[0].secure_url,
+          public_id: uploadResponse.public_id,
+        };
+      } catch (err) {
+        console.error("Error uploading cover image:", err);
+        return res.status(400).json({
+          success: false,
+          message: `Error uploading cover image: ${err.message}`,
+        });
+      }
+    }
+
+    // Upload gallery images to Cloudinary
+    const uploadedGalleryImages = [];
+    if (
+      gallery_images &&
+      Array.isArray(gallery_images) &&
+      gallery_images.length > 0
+    ) {
+      try {
+        for (const image of gallery_images) {
+          if (image.startsWith("data:image")) {
+            const uploadResponse = await cloudinary.uploader.upload(image, {
+              folder: "Tours/GalleryImages",
+            });
+            uploadedGalleryImages.push(uploadResponse.secure_url);
+          }
+        }
+        tourData.gallery_images = uploadedGalleryImages;
+      } catch (err) {
+        console.error("Error uploading gallery images:", err);
+        return res.status(400).json({
+          success: false,
+          message: "Error uploading gallery images. Tour cannot be created!",
+        });
+      }
+    }
+
+    // Create new tour
+    const newTour = new Tour(tourData);
+
+    // Save tour to database
+    const savedTour = await newTour.save();
+
+    // Prepare itinerary items with tour reference
+    const itineraryItems = itinerary.map((item) => ({
+      tour: savedTour._id,
+      day: Number(item.day),
+      title: item.title,
+      description: item.description,
+    }));
+
+    // Validate itinerary items
+    if (itineraryItems.length !== Number(numberofdays)) {
+      return res.status(400).json({
+        success: false,
+        message: "Number of itinerary items must match number of days",
+      });
+    }
+
+    // Save all itinerary items
+    const savedItinerary = await Itinerary.insertMany(itineraryItems);
 
     return res.status(201).json({
-      message: "Tour added successfully",
-      tour: addTour,
+      success: true,
+      message: "Tour and itinerary created successfully",
+      tour: savedTour,
+      itinerary: savedItinerary,
     });
   } catch (error) {
-    console.log("Error in add_trips:", error);
+    console.error("Error creating tour:", error);
+    if (error.name === "MongoServerError" && error.code === 11000) {
+      const field = Object.keys(error.keyPattern)[0];
+      return res.status(400).json({
+        success: false,
+        message: `${
+          field === "name" ? "Tour name" : "Location"
+        } is already registered`,
+      });
+    }
     return res.status(500).json({
+      success: false,
       message: "Internal server error",
+      error: error.message,
     });
   }
 };
 
-export const add_itinerary = async (req, res) => {
+export const getTourWithItinerary = async (req, res) => {
   try {
-    const tour = req.params.tourId;
-    const tourExists = await Tour.findById(tour);
-    if (!tourExists) {
+    const tourId = req.params.tourId;
+
+    // Get tour details
+    const tour = await Tour.findById(tourId);
+    if (!tour) {
       return res.status(404).json({
+        success: false,
         message: "Tour not found",
       });
     }
-    const { day, title, description } = req.body;
 
-    if (!day || !title || !description) {
-      return res.status(400).json({
-        message: "All fields are required!",
-      });
-    }
+    // Get itinerary for this tour
+    const itinerary = await Itinerary.find({ tour: tourId }).sort({ day: 1 });
 
-    const addItinerary = new Itinerary({
+    return res.status(200).json({
+      success: true,
       tour,
-      day,
-      title,
-      description,
-    });
-
-    await addItinerary.save();
-
-    res.status(201).json({
-      message: "Itinerary added successfully",
-      itinerary: addItinerary,
+      itinerary,
     });
   } catch (error) {
-    console.log("Error in add_itinerary", error);
+    console.error("Error fetching tour:", error);
     return res.status(500).json({
+      success: false,
       message: "Internal server error",
+      error: error.message,
     });
   }
 };

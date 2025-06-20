@@ -24,7 +24,7 @@ const CardBody = () => {
               src={uppermustang}
               alt="Upper mustang"
               style={{
-                width: 100 % CardBody,
+                width: "100%",
                 height: "100%",
                 objectFit: "cover",
               }}
@@ -58,7 +58,7 @@ const CardBody = () => {
               src={uppermustang}
               alt="Upper mustang"
               style={{
-                width: 100 % CardBody,
+                width: "100%",
                 height: "100%",
                 objectFit: "cover",
               }}
@@ -92,7 +92,7 @@ const CardBody = () => {
               src={uppermustang}
               alt="Upper mustang"
               style={{
-                width: 100 % CardBody,
+                width: "100%",
                 height: "100%",
                 objectFit: "cover",
               }}

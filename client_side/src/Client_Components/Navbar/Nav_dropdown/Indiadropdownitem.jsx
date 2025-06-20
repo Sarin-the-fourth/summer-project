@@ -16,7 +16,7 @@ const Indiadropdownitem = () => {
             key={index}
             className="p-2 rounded hover:bg-[#fdb913] hover:text-black transition"
           >
-            <Link to="#upper-mustang" className="block">
+            <Link to={`/tour/${tour._id}`} className="block">
               <h3 className="font-bold text-[#212529]">{tour.name}</h3>
               <p className="font-poppins text-xs text-gray-600">
                 {tour.description}

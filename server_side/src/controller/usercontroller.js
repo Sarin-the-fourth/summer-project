@@ -185,3 +185,35 @@ export const get_tours_country = async (req, res) => {
     });
   }
 };
+
+export const getTourWithItinerary = async (req, res) => {
+  try {
+    const { tourId } = req.params;
+    console.log(tourId);
+
+    // Get tour details
+    const tour = await Tours.findById(tourId);
+    if (!tour) {
+      return res.status(404).json({
+        success: false,
+        message: "Tour not found",
+      });
+    }
+
+    // Get itinerary for this tour
+    const itinerary = await Itinerary.find({ tour: tourId }).sort({ day: 1 });
+
+    return res.status(200).json({
+      success: true,
+      tour,
+      itinerary,
+    });
+  } catch (error) {
+    console.error("Error fetching tour:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};

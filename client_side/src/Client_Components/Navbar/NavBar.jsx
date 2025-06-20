@@ -25,7 +25,7 @@ const NavBar = () => {
       <div className="navbar bg-white/30 backdrop-blur-sm border-0 px-8 py-5 font-bebas flex justify-center sticky top-0 z-99">
         <div className="absolute left-5 top-1 bottom-1 flex items-center h-15 px-4">
           <Link to="/" className="text-lg cursor-pointer">
-            <img src="./wtalogo1.ico" alt="logo" className="h-15" />
+            <img src="/wtalogo1.ico" alt="logo" className="h-15" />
           </Link>
         </div>
 
@@ -33,10 +33,7 @@ const NavBar = () => {
         <div className="md:flex gap-16 font-bebas-neue text-xl items-center  hidden ">
           <Link
             to={"/"}
-            className="flex cursor-pointer"
-            style={{ color: "black" }}
-            onMouseEnter={(e) => (e.target.style.color = "#fdb913")}
-            onMouseLeave={(e) => (e.target.style.color = "black")}
+            className="flex cursor-pointer text-black hover:text-[#fdb913] transition-normal duration-300"
           >
             Home
           </Link>
@@ -45,11 +42,7 @@ const NavBar = () => {
             <div
               tabIndex={0}
               role="button"
-              className="flex cursor-pointer"
-              style={{ color: "black" }}
-              onMouseEnter={(e) => (e.target.style.color = "#fdb913")}
-              onMouseLeave={(e) => (e.target.style.color = "black")}
-              onClick={(e) => (e.target.style.color = "#fdb913")}
+              className="flex cursor-pointer text-black hover:text-[#fdb913] transition-normal duration-300"
             >
               Nepal
             </div>
@@ -59,10 +52,7 @@ const NavBar = () => {
           <div className="dropdown dropdown-center">
             <div
               tabIndex={0}
-              className="flex cursor-pointer"
-              style={{ color: "black" }}
-              onMouseEnter={(e) => (e.target.style.color = "#fdb913")}
-              onMouseLeave={(e) => (e.target.style.color = "black")}
+              className="flex cursor-pointer text-black hover:text-[#fdb913] transition-normal duration-300"
             >
               India
             </div>
@@ -72,29 +62,20 @@ const NavBar = () => {
 
           <a
             href="#Bhutan"
-            className="flex cursor-pointer"
-            style={{ color: "black" }}
-            onMouseEnter={(e) => (e.target.style.color = "#fdb913")}
-            onMouseLeave={(e) => (e.target.style.color = "black")}
+            className="flex cursor-pointer text-black hover:text-[#fdb913] transition-normal duration-300"
           >
             Bhutan
           </a>
           <Link
             to={"/aboutus"}
-            className="flex cursor-pointer"
-            style={{ color: "black" }}
-            onMouseEnter={(e) => (e.target.style.color = "#fdb913")}
-            onMouseLeave={(e) => (e.target.style.color = "black")}
+            className="flex cursor-pointer text-black hover:text-[#fdb913] transition-normal duration-300"
           >
             About Us
           </Link>
 
           <Link
             to="/contactus"
-            className="flex cursor-pointer"
-            style={{ color: "black" }}
-            onMouseEnter={(e) => (e.target.style.color = "#fdb913")}
-            onMouseLeave={(e) => (e.target.style.color = "black")}
+            className="flex cursor-pointer text-black hover:text-[#fdb913] transition-normal duration-300"
           >
             Contact
           </Link>

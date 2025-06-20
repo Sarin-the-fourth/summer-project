@@ -50,7 +50,7 @@ const Contact = () => {
               type="tel"
               className="text-black  p-2 pl-2 w-full mt-2 focus:outline-none focus:shadow-xl bg-transparent placeholder-shown:bg-white transition-all duration-300"
               placeholder="Enter your phone number"
-              pattern="\d{10}"
+              pattern="\d{13}"
               title="Enter valid phone number"
             />
 
@@ -61,7 +61,7 @@ const Contact = () => {
             <input
               type="number"
               className="text-black  p-2 pl-2 w-full mt-2 focus:outline-none focus:shadow-xl bg-transparent placeholder-shown:bg-white transition-all duration-300"
-              placeholder="Enter your phone number"
+              placeholder="Enter number of persons"
               title="Select number of persons"
               min="1"
               step="1"
@@ -162,7 +162,7 @@ const Contact = () => {
             </label>
             <textarea
               className="textarea text-black p-2 pl-2 w-full h-[100px] mt-2 focus:outline-none focus:shadow-xl bg-transparent placeholder-shown:bg-white transition-all duration-300"
-              placeholder="Bio"
+              placeholder="Inquiry"
             ></textarea>
 
             <button

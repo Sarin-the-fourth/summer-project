@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import Itinerary from "./itinerarymodel.js";
 
 const tourSchema = new mongoose.Schema({
   name: {
@@ -19,7 +18,17 @@ const tourSchema = new mongoose.Schema({
     unique: true,
   },
 
+  introduction: {
+    type: String,
+    required: true,
+  },
+
   price: {
+    type: Number,
+    required: true,
+  },
+
+  altitude: {
     type: Number,
     required: true,
   },
@@ -31,21 +40,25 @@ const tourSchema = new mongoose.Schema({
 
   availability: {
     type: Boolean,
+    default: true,
   },
+
+  cover_image: {
+    type: String,
+    required: true,
+  },
+
+  gallery_images: [
+    {
+      type: String,
+    },
+  ],
 
   country: {
     type: String,
     enum: ["Nepal", "India", "Bhutan"],
     required: true,
   },
-
-  itinerary: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Itinerary",
-      required: true,
-    },
-  ],
 });
 
 const Tours = mongoose.model("Tour", tourSchema);

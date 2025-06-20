@@ -9,10 +9,13 @@ import Tour from "./Client_Components/TourpageLayout/tourpage";
 import { useTourStore } from "./Store/useTourStore";
 import { useEffect } from "react";
 import NavBar from "./Client_Components/Navbar/NavBar";
+import AdminDashboard from "./Admin_Components/AdminDashboard";
+import TourWizard from "./Admin_Components/AddTourForm/TourWizard";
 
 function App() {
   const location = useLocation();
-  const isLoginPage = location.pathname === "/login";
+  const isadminroute =
+    location.pathname.startsWith("/admin") || location.pathname === "/login";
 
   const { getTourNepal, getTourIndia, loadingNepal, loadingIndia } =
     useTourStore();
@@ -28,15 +31,19 @@ function App() {
 
   return (
     <div>
-      {!isLoginPage && <NavBar />}
+      {!isadminroute && <NavBar />}
       <Routes>
         <Route path="/" element={<HomeLayout />} />
         <Route path="/aboutus" element={<AboutUs />} />
-        <Route path="/login" element={<AdminLogin />} />
         <Route path="/contactus" element={<Contact />} />
-        <Route path="/tourpage" element={<Tour />} />
+        <Route path="/tour/:id" element={<Tour />} />
+
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+
+        <Route path="/tour-form" element={<TourWizard />} />
       </Routes>
-      {!isLoginPage && <Footer />}
+      {!isadminroute && <Footer />}
 
       <ToastContainer
         position="top-right"

@@ -7,7 +7,7 @@ const Footer = () => {
       >
         <aside>
           <img
-            src="./wtalogo1.ico"
+            src="/wtalogo1.ico"
             alt="Company Logo"
             width="60"
             height="60"

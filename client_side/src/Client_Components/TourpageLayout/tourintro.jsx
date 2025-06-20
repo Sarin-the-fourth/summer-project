@@ -1,12 +1,15 @@
+import { useTourStore } from "../../Store/useTourStore";
+
 const Tour_Intro = () => {
+  const { tour } = useTourStore();
   return (
     <div className="grid grid-cols-2 gap-25 m-10">
       <div>
         <h1 className="uppercase text-[#fdb913] flex justify-center font-bebas text-5xl">
           Introduction
         </h1>
-        <p className="font-montserrat font-light mt-4 text-justify">
-          Upper Mustang or formerly known as the Kingdom of Lo is a remote,
+        <p className="font-montserrat font-light mt-4 text-justify whitespace-pre-line">
+          {/* Upper Mustang or formerly known as the Kingdom of Lo is a remote,
           rugged and once a forbidden region north of Annapurna. In 1992 the
           area was finally opened to a limited number of foreign visitors per
           year. Today Upper Mustang is one of the most sought after biking and
@@ -17,7 +20,9 @@ const Tour_Intro = () => {
           <br />
           With the opening of a dirt road all the way to the border at Karola
           Pass (4,660m), Upper Mustang is now proving to be a paradise for
-          adventure bikers.
+          adventure bikers. */}
+
+          {tour?.introduction}
         </p>
       </div>
       <div>
@@ -27,19 +32,7 @@ const Tour_Intro = () => {
         <div className="font-montserrat mt-4">
           <div className="flex items-center space-x-2">
             <h2 className="font-bold text-xl">Duration:</h2>
-            <p className="text-lg">10 days</p>
-          </div>
-          <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1">
-            <h2 className="font-bold text-xl">Bookings This Year:</h2>
-            <p className="text-lg">18th April</p>
-            <p className="text-lg text-red-600">- Completed</p>
-            <p className="text-lg">.</p>
-            <p className="text-lg">21th Sept</p>
-            <p className="text-lg text-green-600">- Open</p>
-            <p className="text-lg">.</p>
-            <p className="text-lg">21th Sept</p>
-            <p className="text-lg text-yellow-400">- Booked</p>
-            <p className="text-lg">.</p>
+            <p className="text-lg">{tour?.numberofdays} days</p>
           </div>
 
           <div className="mt-2 flex items-center space-x-2">
@@ -49,7 +42,7 @@ const Tour_Intro = () => {
 
           <div className="mt-2 flex items-center space-x-2">
             <h2 className="font-bold text-xl">Altitude Gain:</h2>
-            <p className="text-lg">4,660m</p>
+            <p className="text-lg">{tour?.altitude}m</p>
           </div>
 
           <div className="mt-2 flex items-center space-x-2">
@@ -61,7 +54,7 @@ const Tour_Intro = () => {
 
           <div className="mt-2 flex items-center space-x-2">
             <h2 className="font-bold text-xl">Trip Cost:</h2>
-            <p className="text-lg">$3200 onwards (based on group size)</p>
+            <p className="text-lg">${tour?.price} per person</p>
           </div>
         </div>
       </div>
