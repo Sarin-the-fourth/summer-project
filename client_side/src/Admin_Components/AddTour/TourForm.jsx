@@ -61,7 +61,7 @@ const TourForm = ({ onNext, tourData, setTourData }) => {
                 onChange={(e) =>
                   setTourData({ ...tourData, [key]: e.target.value })
                 }
-                className="w-full px-4 py-2 border bg-white border-gray-300 rounded-md focus:outline-none focus:border-2"
+                className="w-full px-4 py-2 font-montserrat border bg-white border-gray-300 rounded-md focus:outline-none focus:border-2"
                 rows="3"
               />
             ) : (
@@ -78,7 +78,7 @@ const TourForm = ({ onNext, tourData, setTourData }) => {
                     [key]: value,
                   });
                 }}
-                className="w-full px-4 py-2 border bg-white border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:shadow-2xl"
+                className="w-full px-4 py-2 font-montserrat border bg-white border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:shadow-2xl"
               />
             )}
           </div>

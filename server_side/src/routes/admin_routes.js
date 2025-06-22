@@ -5,6 +5,7 @@ import {
   get_pending_bookings,
   createTourWithItinerary,
   getTourWithItinerary,
+  get_all_bikes,
 } from "../controller/admincontroller.js";
 import { respond_booking, get_bikes } from "../controller/admincontroller.js";
 import { is_admin } from "../middleware/authmiddle.js";
@@ -20,5 +21,6 @@ router.get("/bookings/approved", get_approved_bookings);
 router.get("/bookings/pending", get_pending_bookings);
 router.patch("/respond-booking/:bookingId", respond_booking);
 router.get("/get_bikes/:bikeId", get_bikes);
+router.get("/get_bikes", get_all_bikes);
 
 export default router;

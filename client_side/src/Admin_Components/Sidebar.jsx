@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const Sidebar = ({ onAddTourClick }) => {
+const Sidebar = ({ onAddTourClick, onAddBikeClick }) => {
   const [isTourOpen, setisTourOpen] = useState(false);
   const [isBikeOpen, setisBikeOpen] = useState(false);
   const [isInquiryOpen, setisInquiryOpen] = useState(false);
@@ -59,7 +59,15 @@ const Sidebar = ({ onAddTourClick }) => {
           {isBikeOpen && (
             <ul className="ml-10 text-md mb-2 space-y-2 mt-1">
               <li className="hover:text-white">
-                <Link to="#">Add Bikes</Link>
+                <Link
+                  to="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onAddBikeClick();
+                  }}
+                >
+                  Add New Bikes
+                </Link>
               </li>
               <li className="hover:text-white">
                 <Link to="#">Manage Bikes</Link>

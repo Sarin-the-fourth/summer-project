@@ -5,6 +5,7 @@ import Sidebar from "./Sidebar";
 import TourWizard from "./AddTour/TourWizard";
 import Welcomepage from "./Welcomepage";
 import { Navigate } from "react-router-dom";
+import AddBikeForm from "./AddBike/Addbikeform";
 
 const AdminDashboard = () => {
   const { isLoggedIn } = useAuthStore();
@@ -12,6 +13,7 @@ const AdminDashboard = () => {
 
   const [showTourForm, setShowTourForm] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [showBikeForm, setShowBikeForm] = useState(false);
 
   const handleSidebarItemClick = () => {
     setShowWelcome(false);
@@ -19,6 +21,13 @@ const AdminDashboard = () => {
 
   const handleAddTourClick = () => {
     setShowTourForm(true);
+    setShowBikeForm(false);
+    setShowWelcome(false);
+  };
+
+  const handleAddBikeClick = () => {
+    setShowBikeForm(true);
+    setShowTourForm(false);
     setShowWelcome(false);
   };
 
@@ -27,11 +36,13 @@ const AdminDashboard = () => {
       <Sidebar
         onSidebarItemClick={handleSidebarItemClick}
         onAddTourClick={handleAddTourClick}
+        onAddBikeClick={handleAddBikeClick}
       />
       <div className="flex flex-col p-4 space-y-4">
         <Searchbar />
         {/* Main content goes here */}
         {showTourForm && <TourWizard onClose={() => setShowTourForm(false)} />}
+        {showBikeForm && <AddBikeForm onClose={() => setShowBikeForm(false)} />}
         {showWelcome && !showTourForm && <Welcomepage />}
       </div>
     </div>

@@ -217,9 +217,25 @@ export const getTourWithItinerary = async (req, res) => {
 
 export const add_bikes = async (req, res) => {
   try {
-    const { bike_number, bike_brand, bike_model, condition } = req.body;
+    const {
+      bike_number,
+      bike_brand,
+      bike_model,
+      condition,
+      bike_image,
+      bike_description,
+      bike_price,
+    } = req.body;
 
-    if (!bike_number || !bike_brand || !bike_model || !condition) {
+    if (
+      !bike_number ||
+      !bike_brand ||
+      !bike_model ||
+      !condition ||
+      !bike_image ||
+      !bike_description ||
+      !bike_price
+    ) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -235,6 +251,9 @@ export const add_bikes = async (req, res) => {
       bike_brand,
       bike_model,
       condition,
+      bike_image,
+      bike_description,
+      bike_price,
     });
 
     await addBike.save();
@@ -324,7 +343,7 @@ export const get_bikes = async (req, res) => {
     const { bikeId } = req.params;
 
     const bikes = await Bike.findById(bikeId).select(
-      "bike_number bike_brand bike_model condition availability"
+      "bike_number bike_brand bike_model condition bike_description bike_image"
     );
 
     if (!bikes) {
@@ -339,6 +358,30 @@ export const get_bikes = async (req, res) => {
     });
   } catch (error) {
     console.log("Error in get_bikes:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+export const get_all_bikes = async (req, res) => {
+  try {
+    const bikes = await Bike.find().select(
+      "bike_number bike_brand bike_model condition bike_description bike_image bike_price"
+    );
+
+    if (!bikes || bikes.length === 0) {
+      return res.status(404).json({
+        message: "No bikes found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Bikes fetched successfully",
+      bikes,
+    });
+  } catch (error) {
+    console.log("Error in get_all_bikes:", error);
     return res.status(500).json({
       message: "Internal server error",
     });
