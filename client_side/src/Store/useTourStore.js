@@ -41,7 +41,6 @@ export const useTourStore = create((set) => ({
     try {
       set({ loadingTours: true });
       const res = await axiosInstance.get(`/user/tour-itinerary/${id}`);
-      console.log(res.data);
 
       set({ tour: res.data.tour, itinerary: res.data.itinerary });
     } catch (error) {

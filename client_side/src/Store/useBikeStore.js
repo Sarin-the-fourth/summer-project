@@ -11,7 +11,8 @@ export const useBikeStore = create((set) => ({
     try {
       set({ loadingBikes: true });
       const res = await axiosInstance.get("/user/bikes");
-      set({ bikes: res.data.bikes || [] });
+      console.log(res.data);
+      set({ bikes: res.data || [] });
     } catch (err) {
       console.error("Error fetching bikes:", err);
       toast.error("Failed to fetch bikes");

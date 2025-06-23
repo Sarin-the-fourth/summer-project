@@ -4,6 +4,7 @@ import { useBikeStore } from "../../Store/useBikeStore";
 
 const Book = () => {
   const [showGarage, setShowGarage] = useState(false);
+  const [blur, setblur] = useState(false);
   const [loading, setLoading] = useState(false);
   const { bikes, fetchBikes } = useBikeStore();
 
@@ -11,6 +12,7 @@ const Book = () => {
     const loadBikes = async () => {
       setLoading(true);
       await fetchBikes();
+      console.log(bikes);
       setLoading(false);
     };
     loadBikes();
@@ -19,74 +21,47 @@ const Book = () => {
   return (
     <>
       {showGarage && (
-        <div className="fixed inset-0 bg-gray-100 bg-opacity-10 flex items-center justify-center z-10">
-          <div className="bg-white p-10 m-10 rounded-lg w-full">
-            <h2 className="text-7xl text-center font-bebas mb-4">Garage</h2>
-            <div className="flex flex-wrap gap-6 justify-center">
-              {loading ? (
-                <p>Loading bikes...</p>
-              ) : !loading && bikes.length === 0 ? (
-                <p>No bikes available.</p>
-              ) : (
-                bikes.map((items) => (
-                  <div
-                    key={items.bike_number}
-                    className="grid grid-cols-2 m-4 p-4 bg-gray-50 rounded-lg shadow-md"
-                  >
-                    <div className="flex flex-col justify-center items-center space-y-4">
-                      {items.bike_image ? (
-                        <img
-                          src={items.bike_image}
-                          alt={items.bike_model}
-                          className="w-40 h-40 object-cover rounded"
-                        />
-                      ) : (
-                        <div className="w-40 h-40 flex items-center justify-center bg-gray-200 text-gray-500 rounded">
-                          No Image
-                        </div>
-                      )}
-                      <p className="font-montserrat font-bold text-lg">
-                        {items.bike_model}
-                      </p>
-                      <p className="font-montserrat font-medium text-lg">
-                        {items.bike_description}
-                      </p>
-                      <p className="font-montserrat font-bold text-lg">
-                        Price: {items.bike_price}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-            {/* <ul className="space-y-4">
-              {bike.map((bike, index) => (
-                <li key={index} className="border p-4 rounded">
-                  <p>
-                    <strong>Model:</strong> {bike.model}
+        <div className="fixed inset-0 bg-gray-100 shadow-2xl z-10 overflow-auto rounded m-10">
+          <div className="space-y-5">
+            <h1 className="text-center mt-5 font-bebas text-6xl">Garage</h1>
+            <div className="grid grid-cols-2">
+              {bikes.map((items) => (
+                <div className="ml-5 flex flex-col items-center justify-center space-y-2">
+                  <img className="w-70 h-70 border-1" src="" alt="bike_image" />
+                  <h1 className="font-montserrat font-bold text-lg">
+                    The {items.bike_model}
+                  </h1>
+                  <p className="font-montserrat font-normal text-medium">
+                    {items.bike_description}
                   </p>
-                  <p>
-                    <strong>Engine:</strong> {bike.engine}
+                  <p className="font-montserrat mb-10 font-semibold text-medium">
+                    Price/day: {items.bike_price}$
                   </p>
-                  <p>
-                    <strong>Type:</strong> {bike.type}
-                  </p>
-                </li>
+                </div>
               ))}
-            </ul> */}
+            </div>
             <button
-              onClick={() => setShowGarage(false)}
-              className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              className=" absolute top-2 right-4 rounded text-xl text-black hover:text-2xl focus:text-yellow-400 font-montserrat transition-all duration-300"
+              onClick={() => {
+                setShowGarage(false);
+                setblur(false);
+              }}
             >
-              Close
+              X
             </button>
           </div>
         </div>
       )}
+      {blur && (
+        <div className="fixed inset-0 z-5 backdrop-blur-2xl w-full h-full"></div>
+      )}
       <div className="min-h-30">
         <div className="mt-20 grid grid-cols-2">
           <button
-            onClick={() => setShowGarage(true)}
+            onClick={() => {
+              setShowGarage(true);
+              setblur(true);
+            }}
             className="flex justify-center font-montserrat font-light text-xl "
           >
             <p className="border-0 rounded-md pl-5 pr-5 pt-1.5 pb-1.5 bg-[#fdb913] hover:bg-black hover:text-white">

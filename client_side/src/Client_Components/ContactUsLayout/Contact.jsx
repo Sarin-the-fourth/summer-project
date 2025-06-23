@@ -87,7 +87,7 @@ const Contact = () => {
               }}
             >
               <option value="" disabled>
-                -- Choose a tour --
+                Choose a tour
               </option>
               <option value="uppermustang">The Forbidden Ride</option>
               <option value="Mustang">Road to Mustang</option>
@@ -113,7 +113,7 @@ const Contact = () => {
               }}
             >
               <option value="" disabled>
-                -- Choose a Bike --
+                Choose a Bike
               </option>
               <option value="uppermustang">Royal Enfield Classic 500</option>
               <option value="Mustang">Royal Enfield Himalayan 411</option>
@@ -220,7 +220,7 @@ const Contact = () => {
             href="https://www.tripadvisor.com/Attraction_Review-g293890-d6696340-Reviews-Wild_Tracks_Nepal_Himalayan_Moto_Journeys-Kathmandu_Kathmandu_Valley_Bagmati_Zone.html"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:cursor-pointer hover:text-[#fdb913]"
+            className="hover:cursor-pointer text-[#fdb913] hover:text-[#fad472] focus:text-[#fdb913]"
           >
             <p>Wild Tracks Nepal</p>
           </a>

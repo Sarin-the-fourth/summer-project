@@ -257,6 +257,7 @@ export const add_bikes = async (req, res) => {
     });
 
     await addBike.save();
+
     return res.status(200).json({ message: "Bike added successfully" });
   } catch (error) {
     console.log("Error in add_bikes:", error);
@@ -352,9 +353,12 @@ export const get_bikes = async (req, res) => {
       });
     }
 
+    const modelCount = Bike.countDocuments({ bike_model: bikes.bike_model });
+
     return res.status(200).json({
       message: "Bike fetched successfully",
       bikes,
+      modelCount,
     });
   } catch (error) {
     console.log("Error in get_bikes:", error);

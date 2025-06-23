@@ -2,7 +2,7 @@ import Bike from "../models/bikemodel.js";
 import Booking from "../models/bookingmodel.js";
 import Tours from "../models/tourmodel.js";
 import Itinerary from "../models/itinerarymodel.js";
-import { getBikesWithAvailability } from "../middleware/bike_availability.js";
+import { getBikesWithAvailability } from "../middleware/bike_availability_count.js";
 
 //Get all bikes
 export const get_bikes = async (req, res) => {

@@ -38,6 +38,11 @@ const bikeSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+
+  count: {
+    type: Number,
+    default: 1,
+  },
 });
 
 const Bike = mongoose.model("Bike", bikeSchema);
