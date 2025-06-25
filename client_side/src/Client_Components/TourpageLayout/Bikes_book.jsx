@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useBikeStore } from "../../Store/useBikeStore";
+import { useBikeStore } from "../../store/useBikeStore";
 
 const Book = () => {
   const [showGarage, setShowGarage] = useState(false);

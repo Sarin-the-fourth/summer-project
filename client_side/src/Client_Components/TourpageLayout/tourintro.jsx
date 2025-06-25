@@ -46,7 +46,8 @@ const Tour_Intro = () => {
           </div>
 
           <div className="mt-2 flex items-center space-x-2">
-            <h2 className="font-bold text-xl">Bikes:</h2>
+            <h2 className="font-bold text-xl">Recommended Bikes:</h2>
+            {/*esma admin le multiple bike choose garne banaunu paryo*/}
             <p className="text-lg">Royal Enfield Classic 500</p>
             <p className="text-lg">,</p>
             <p className="text-lg">Royal Enfield Himalayan 411</p>

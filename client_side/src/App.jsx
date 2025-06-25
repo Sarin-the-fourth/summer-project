@@ -10,7 +10,7 @@ import { useTourStore } from "./Store/useTourStore";
 import { useEffect } from "react";
 import NavBar from "./Client_Components/Navbar/NavBar";
 import AdminDashboard from "./Admin_Components/AdminDashboard";
-import TourWizard from "./Admin_Components/AddTour/TourWizard";
+import TourWizard from "./Admin_Components/Tour/TourWizard";
 
 function App() {
   const location = useLocation();

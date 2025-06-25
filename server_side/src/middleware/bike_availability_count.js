@@ -33,6 +33,7 @@ export const getBikesWithAvailability = async (filter = {}) => {
         bike_brand: 1,
         bike_model: 1,
         availability: 1,
+        condition: 1,
         bike_description: 1,
         bike_price: 1,
         count: 1,

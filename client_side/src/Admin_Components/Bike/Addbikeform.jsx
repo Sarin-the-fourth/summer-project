@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAdminStore } from "../../Store/useAdminStore";
 import { toast } from "react-toastify";
 
@@ -40,6 +40,7 @@ const AddBikeForm = () => {
       !bikeData.bike_brand ||
       !bikeData.bike_model ||
       !bikeData.bike_image ||
+      !bikeData.condition ||
       !bikeData.bike_description ||
       !bikeData.bike_price
     ) {
@@ -168,48 +169,6 @@ const AddBikeForm = () => {
           </button>
         </div>
       </div>
-
-      {/* <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="bike_number"
-          placeholder="Bike Number"
-          value={bikeData.bike_number}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="bike_brand"
-          placeholder="Bike Brand"
-          value={bikeData.bike_brand}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="bike_model"
-          placeholder="Bike Model"
-          value={bikeData.bike_model}
-          onChange={handleChange}
-        />
-        <select
-          name="condition"
-          value={bikeData.condition}
-          onChange={handleChange}
-        >
-          <option value="excellent">Excellent</option>
-          <option value="running">Running</option>
-          <option value="needs repair">Needs Repair</option>
-        </select>
-        <input type="file" accept="image/*" onChange={handleImageChange} />
-        {bikeData.bike_image && (
-          <img
-            src={bikeData.bike_image}
-            alt="Preview"
-            style={{ width: "150px", marginTop: "10px" }}
-          />
-        )}
-        <button type="submit">Add Bike</button>
-      </form> */}
     </div>
   );
 };

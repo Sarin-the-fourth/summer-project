@@ -267,6 +267,81 @@ export const add_bikes = async (req, res) => {
   }
 };
 
+export const get_bikes = async (req, res) => {
+  try {
+    const { bikeId } = req.params;
+
+    const bikes = await Bike.findById(bikeId).select(
+      "bike_number bike_brand bike_model condition bike_description bike_image"
+    );
+
+    if (!bikes) {
+      return res.status(404).json({
+        message: "Bike not found",
+      });
+    }
+
+    const modelCount = Bike.countDocuments({ bike_model: bikes.bike_model });
+
+    return res.status(200).json({
+      message: "Bike fetched successfully",
+      bikes,
+      modelCount,
+    });
+  } catch (error) {
+    console.log("Error in get_bikes:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+export const get_all_bikes = async (req, res) => {
+  try {
+    const bikes = await Bike.find().select(
+      "bike_number bike_brand bike_model condition bike_description bike_image bike_price"
+    );
+
+    if (!bikes || bikes.length === 0) {
+      return res.status(404).json({
+        message: "No bikes found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Bikes fetched successfully",
+      bikes,
+    });
+  } catch (error) {
+    console.log("Error in get_all_bikes:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+export const delete_bike = async (req, res) => {
+  try {
+    const bike_number = decodeURIComponent(req.params.bike_number).trim();
+
+    const deletedBike = await Bike.findOneAndDelete({
+      bike_number: { $regex: new RegExp(`^${bike_number}$`, "i") },
+    });
+    if (!deletedBike) {
+      return res.status(404).json({ message: "Bike not found" });
+    }
+
+    return res.status(200).json({
+      message: "Bike deleted successfully",
+    });
+  } catch (error) {
+    console.log("Error in delete_bike: ", error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
 export const get_approved_bookings = async (req, res) => {
   try {
     const bookings = await Booking.find({ status: "approved" })
@@ -333,59 +408,6 @@ export const get_tour = async (req, res) => {
     });
   } catch (error) {
     console.log("Error in get_tour:", error);
-    return res.status(500).json({
-      message: "Internal server error",
-    });
-  }
-};
-
-export const get_bikes = async (req, res) => {
-  try {
-    const { bikeId } = req.params;
-
-    const bikes = await Bike.findById(bikeId).select(
-      "bike_number bike_brand bike_model condition bike_description bike_image"
-    );
-
-    if (!bikes) {
-      return res.status(404).json({
-        message: "Bike not found",
-      });
-    }
-
-    const modelCount = Bike.countDocuments({ bike_model: bikes.bike_model });
-
-    return res.status(200).json({
-      message: "Bike fetched successfully",
-      bikes,
-      modelCount,
-    });
-  } catch (error) {
-    console.log("Error in get_bikes:", error);
-    return res.status(500).json({
-      message: "Internal server error",
-    });
-  }
-};
-
-export const get_all_bikes = async (req, res) => {
-  try {
-    const bikes = await Bike.find().select(
-      "bike_number bike_brand bike_model condition bike_description bike_image bike_price"
-    );
-
-    if (!bikes || bikes.length === 0) {
-      return res.status(404).json({
-        message: "No bikes found",
-      });
-    }
-
-    return res.status(200).json({
-      message: "Bikes fetched successfully",
-      bikes,
-    });
-  } catch (error) {
-    console.log("Error in get_all_bikes:", error);
     return res.status(500).json({
       message: "Internal server error",
     });

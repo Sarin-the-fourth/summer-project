@@ -34,9 +34,11 @@ export const useAdminStore = create((set) => ({
     }
   },
 
-  deleteBike: async (bikeid) => {
+  deletebike: async (bike_number) => {
     try {
-      await axiosInstance.delete(`/admin/delete_bike/${bikeid}`);
+      await axiosInstance.delete(
+        `/admin/delete-bike/${encodeURIComponent(bike_number)}`
+      );
       toast.success("Bike deleted successfully");
     } catch (error) {
       console.error("Error deleting bike:", error);

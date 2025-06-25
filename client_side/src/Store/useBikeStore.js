@@ -6,6 +6,7 @@ export const useBikeStore = create((set) => ({
   bikes: [],
   loadingBikes: false,
   selectedBike: null,
+  bikeModelCount: {},
 
   fetchBikes: async () => {
     try {
@@ -13,6 +14,11 @@ export const useBikeStore = create((set) => ({
       const res = await axiosInstance.get("/user/bikes");
       console.log(res.data);
       set({ bikes: res.data || [] });
+      const modelCount = res.data.reduce((acc, bike) => {
+        acc[bike.bike_model] = (acc[bike.bike_model] || 0) + 1;
+        return acc;
+      }, {});
+      set({ bikeModelCount: modelCount });
     } catch (err) {
       console.error("Error fetching bikes:", err);
       toast.error("Failed to fetch bikes");
