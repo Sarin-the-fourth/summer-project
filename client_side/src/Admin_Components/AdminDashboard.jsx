@@ -5,9 +5,9 @@ import Sidebar from "./Sidebar";
 import TourWizard from "./Tour/TourWizard";
 import Welcomepage from "./Welcomepage";
 import { Navigate } from "react-router-dom";
-import AddBikeForm from "./Bike/Addbikeform";
 import Details from "./Bike/Details";
 import Managebike from "./Bike/Managebike";
+import AddBikeWizard from "./Bike/Addbikewizard";
 
 const AdminDashboard = () => {
   const { isLoggedIn } = useAuthStore();
@@ -15,7 +15,7 @@ const AdminDashboard = () => {
 
   const [showTourForm, setShowTourForm] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
-  const [showBikeForm, setShowBikeForm] = useState(false);
+  const [showBikeWizard, setShowBikeWizard] = useState(false);
   const [showBikeDetails, setShowBikeDetails] = useState(false);
   const [showManageBike, setShowManageBike] = useState(false);
 
@@ -25,24 +25,24 @@ const AdminDashboard = () => {
 
   const handleAddTourClick = () => {
     setShowTourForm(true);
-    setShowBikeForm(false);
+    setShowBikeWizard(false);
     setShowWelcome(false);
     setShowBikeDetails(false);
-    setShowManageBike(true);
+    setShowManageBike(false);
   };
 
-  const handleAddBikeClick = () => {
-    setShowBikeForm(true);
+  const handleAddBikeWizardClick = () => {
+    setShowBikeWizard(true);
     setShowTourForm(false);
     setShowWelcome(false);
     setShowBikeDetails(false);
-    setShowManageBike(true);
+    setShowManageBike(false);
   };
 
   const handleBikeDetails = () => {
     setShowBikeDetails(true);
     setShowTourForm(false);
-    setShowBikeForm(false);
+    setShowBikeWizard(false);
     setShowWelcome(false);
     setShowManageBike(false);
   };
@@ -51,7 +51,7 @@ const AdminDashboard = () => {
     setShowManageBike(true);
     setShowBikeDetails(false);
     setShowTourForm(false);
-    setShowBikeForm(false);
+    setShowBikeWizard(false);
     setShowWelcome(false);
   };
 
@@ -60,15 +60,16 @@ const AdminDashboard = () => {
       <Sidebar
         onSidebarItemClick={handleSidebarItemClick}
         onAddTourClick={handleAddTourClick}
-        onAddBikeClick={handleAddBikeClick}
+        onAddBikeWizardClick={handleAddBikeWizardClick}
         onDetailsClick={handleBikeDetails}
         onManageBikeClick={handleManageBike}
       />
       <div className="flex flex-col p-4 space-y-4">
         <Searchbar />
-        {/* Main content goes here */}
         {showTourForm && <TourWizard onClose={() => setShowTourForm(false)} />}
-        {showBikeForm && <AddBikeForm onClose={() => setShowBikeForm(false)} />}
+        {showBikeWizard && (
+          <AddBikeWizard onClose={() => setShowBikeWizard(false)} />
+        )}
         {showBikeDetails && (
           <Details onClose={() => setShowBikeDetails(false)} />
         )}

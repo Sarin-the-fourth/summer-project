@@ -27,7 +27,11 @@ const Book = () => {
             <div className="grid grid-cols-2">
               {bikes.map((items) => (
                 <div className="ml-5 flex flex-col items-center justify-center space-y-2">
-                  <img className="w-70 h-70 border-1" src="" alt="bike_image" />
+                  <img
+                    className="w-70 h-70 border-1"
+                    src={items?.bike_image}
+                    alt="bike_image"
+                  />
                   <h1 className="font-montserrat font-bold text-lg">
                     The {items.bike_model}
                   </h1>

@@ -59,6 +59,13 @@ const tourSchema = new mongoose.Schema({
     enum: ["Nepal", "India", "Bhutan"],
     required: true,
   },
+
+  recommended_bikes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Bike",
+    },
+  ],
 });
 
 const Tours = mongoose.model("Tour", tourSchema);

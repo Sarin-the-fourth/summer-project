@@ -1,5 +1,4 @@
 import { useTourStore } from "../../Store/useTourStore";
-import bgimage2 from "./../../assets/images/mustang.png";
 import "./gallery.scss";
 import * as basicLightbox from "basiclightbox";
 import "basiclightbox/dist/basicLightbox.min.css";

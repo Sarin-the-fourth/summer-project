@@ -82,7 +82,7 @@ const AddBikeForm = () => {
           { label: "Price", key: "bike_price", type: "number" },
         ].map(({ label, key, type }) => (
           <div key={key}>
-            <label className="block text-md font-montserrat text-white mb-1">
+            <label className="block font-montserrat text-white mb-1">
               {label}
             </label>
             {type === "textarea" ? (

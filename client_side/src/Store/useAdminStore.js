@@ -5,6 +5,19 @@ import { axiosInstance } from "../assets/axios";
 export const useAdminStore = create((set) => ({
   loadingAddTour: false,
   loadingAddBike: false,
+  loadingUpdateCondition: false,
+  uniqueModelBikes: [],
+
+
+  fetchUniqueModelBikes: async () => {
+    try {
+      const res = await axiosInstance.get("/admin/unique-bike-models");
+      set({ uniqueModelBikes: res.data.bikes });
+    } catch (error) {
+      console.error("Error fetching unique bike models:", error);
+      toast.error("Failed to fetch unique bike models");
+    }
+  },
 
   addTour: async (tourdata) => {
     try {
@@ -43,6 +56,24 @@ export const useAdminStore = create((set) => ({
     } catch (error) {
       console.error("Error deleting bike:", error);
       toast.error(error.response?.data?.message || "Failed to delete bike");
+    }
+  },
+
+  updateBikeCondition: async (bike_number, condition) => {
+    try {
+      set({ loadingUpdateCondition: true });
+      const res = await axiosInstance.put(
+        `/admin/update-bike-condition/${encodeURIComponent(bike_number)}`,
+        { condition }
+      );
+      toast.success(res.data.message);
+    } catch (error) {
+      console.error("Error updating condition:", error);
+      toast.error(
+        error.response?.data?.message || "Failed to update condition"
+      );
+    } finally {
+      set({ loadingUpdateCondition: false });
     }
   },
 }));

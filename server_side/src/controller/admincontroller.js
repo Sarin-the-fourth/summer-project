@@ -4,6 +4,7 @@ import Itinerary from "../models/itinerarymodel.js";
 import Booking from "../models/bookingmodel.js";
 import sendMail from "../utils/sendMail.js";
 import cloudinary from "../utils/CloudinaryConnect.js";
+import { getUniqueModelBikes } from "../middleware/bike_availability_count.js";
 
 export const createTourWithItinerary = async (req, res) => {
   try {
@@ -21,6 +22,7 @@ export const createTourWithItinerary = async (req, res) => {
       cover_image,
       gallery_images,
       itinerary,
+      recommended_bikes, // changed from recommended_bike
     } = req.body;
 
     // Validate required fields
@@ -41,6 +43,20 @@ export const createTourWithItinerary = async (req, res) => {
         message:
           "All required fields must be provided, including cover image and itinerary",
       });
+    }
+
+    // Validate existence of all recommended_bikes
+    if (recommended_bikes && recommended_bikes.length > 0) {
+      const validBikes = await Bike.find({
+        _id: { $in: recommended_bikes },
+      }).select("_id");
+
+      if (validBikes.length !== recommended_bikes.length) {
+        return res.status(400).json({
+          success: false,
+          message: "Some recommended bike IDs are invalid",
+        });
+      }
     }
 
     // Validate country
@@ -74,6 +90,9 @@ export const createTourWithItinerary = async (req, res) => {
       numberofdays: Number(numberofdays),
       country,
       availability: availability === "true" || availability === true,
+      recommended_bikes: Array.isArray(recommended_bikes)
+        ? recommended_bikes
+        : [],
     };
 
     // Upload cover image to Cloudinary
@@ -217,7 +236,7 @@ export const getTourWithItinerary = async (req, res) => {
 
 export const add_bikes = async (req, res) => {
   try {
-    const {
+    let {
       bike_number,
       bike_brand,
       bike_model,
@@ -226,6 +245,21 @@ export const add_bikes = async (req, res) => {
       bike_description,
       bike_price,
     } = req.body;
+
+    const existingModel = await Bike.findOne({ bike_model });
+
+    if (existingModel) {
+      if (!bike_brand) bike_brand = existingModel.bike_brand;
+      if (!bike_description) bike_description = existingModel.bike_description;
+      if (!bike_image) bike_image = existingModel.bike_image;
+      if (!bike_price) bike_price = existingModel.bike_price;
+    }
+
+    if (!existingModel) {
+      return res.status(400).json({
+        message: "Bike model not found. Please check the model name.",
+      });
+    }
 
     if (
       !bike_number ||
@@ -236,7 +270,33 @@ export const add_bikes = async (req, res) => {
       !bike_description ||
       !bike_price
     ) {
-      return res.status(400).json({ message: "All fields are required" });
+      return res
+        .status(400)
+        .json({ message: "All required fields must be provided" });
+    }
+
+    let uploadedBikeImage = bike_image;
+    if (bike_image && bike_image.startsWith("data:image")) {
+      try {
+        const uploadResponse = await cloudinary.uploader.upload(bike_image, {
+          folder: "Bikes/Images",
+          transformation: [
+            {
+              width: 500,
+              height: 500,
+              crop: "fill",
+              gravity: "auto",
+              quality: "auto",
+            },
+          ],
+        });
+        uploadedBikeImage = uploadResponse.secure_url;
+      } catch (err) {
+        console.error("Error uploading bike image:", err);
+        return res.status(400).json({
+          message: `Error uploading bike image: ${err.message}`,
+        });
+      }
     }
 
     const existingBike = await Bike.findOne({ bike_number });
@@ -251,7 +311,7 @@ export const add_bikes = async (req, res) => {
       bike_brand,
       bike_model,
       condition,
-      bike_image,
+      bike_image: uploadedBikeImage,
       bike_description,
       bike_price,
     });
@@ -456,5 +516,49 @@ export const respond_booking = async (req, res) => {
     return res.status(500).json({
       message: "Internal server error",
     });
+  }
+};
+
+export const update_bike_condition = async (req, res) => {
+  try {
+    const bike_number = decodeURIComponent(req.params.bike_number).trim();
+    const { condition } = req.body;
+
+    if (!condition) {
+      return res.status(400).json({ message: "Condition is required" });
+    }
+
+    const updatedBike = await Bike.findOneAndUpdate(
+      { bike_number: { $regex: new RegExp(`^${bike_number}$`, "i") } },
+      { condition },
+      { new: true }
+    );
+
+    if (!updatedBike) {
+      return res.status(404).json({ message: "Bike not found" });
+    }
+
+    return res.status(200).json({
+      message: "Bike condition updated successfully",
+      bike: updatedBike,
+    });
+  } catch (error) {
+    console.error("Error in update_bike_condition:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+export const get_unique_bike_models = async (req, res) => {
+  try {
+    const bikes = await getUniqueModelBikes();
+    return res.status(200).json({
+      message: "Unique bike models fetched successfully",
+      bikes,
+    });
+  } catch (error) {
+    console.error("Error fetching unique bike models:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

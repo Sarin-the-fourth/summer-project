@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Sidebar = ({
   onAddTourClick,
-  onAddBikeClick,
+  onAddBikeWizardClick,
   onDetailsClick,
   onManageBikeClick,
 }) => {
@@ -68,7 +68,7 @@ const Sidebar = ({
                   to="#"
                   onClick={(e) => {
                     e.preventDefault();
-                    onAddBikeClick();
+                    onAddBikeWizardClick();
                   }}
                 >
                   Add New Bikes
@@ -78,7 +78,7 @@ const Sidebar = ({
                 <Link
                   to="#"
                   onClick={(e) => {
-                    e.preventDefault;
+                    e.preventDefault();
                     onManageBikeClick();
                   }}
                 >

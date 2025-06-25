@@ -37,6 +37,7 @@ export const getBikesWithAvailability = async (filter = {}) => {
         bike_description: 1,
         bike_price: 1,
         count: 1,
+        bike_image: 1,
       },
     },
   ]);
@@ -56,6 +57,20 @@ export const getBikeModelCounts = async () => {
         bike_model: "$_id",
         count: 1,
       },
+    },
+  ]);
+};
+
+export const getUniqueModelBikes = async () => {
+  return await Bike.aggregate([
+    {
+      $group: {
+        _id: "$bike_model",
+        bike: { $first: "$$ROOT" },
+      },
+    },
+    {
+      $replaceRoot: { newRoot: "$bike" },
     },
   ]);
 };
