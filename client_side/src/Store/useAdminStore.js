@@ -6,18 +6,6 @@ export const useAdminStore = create((set) => ({
   loadingAddTour: false,
   loadingAddBike: false,
   loadingUpdateCondition: false,
-  uniqueModelBikes: [],
-
-
-  fetchUniqueModelBikes: async () => {
-    try {
-      const res = await axiosInstance.get("/admin/unique-bike-models");
-      set({ uniqueModelBikes: res.data.bikes });
-    } catch (error) {
-      console.error("Error fetching unique bike models:", error);
-      toast.error("Failed to fetch unique bike models");
-    }
-  },
 
   addTour: async (tourdata) => {
     try {
@@ -74,6 +62,17 @@ export const useAdminStore = create((set) => ({
       );
     } finally {
       set({ loadingUpdateCondition: false });
+    }
+  },
+
+  fetchAllBikes: async () => {
+    try {
+      const res = await axiosInstance.get("/admin/get_bikes");
+      console.log(res.data);
+      return res.data;
+    } catch (error) {
+      console.error("Failed to fetch bikes:", error);
+      return [];
     }
   },
 }));

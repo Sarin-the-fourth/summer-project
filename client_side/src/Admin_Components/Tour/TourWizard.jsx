@@ -15,6 +15,7 @@ const TourWizard = () => {
     numberofdays: "",
     country: "",
     availability: true,
+    recommended_bikes: "",
     cover_image: "",
     gallery_images: [],
   });

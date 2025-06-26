@@ -4,7 +4,7 @@ import Itinerary from "../models/itinerarymodel.js";
 import Booking from "../models/bookingmodel.js";
 import sendMail from "../utils/sendMail.js";
 import cloudinary from "../utils/CloudinaryConnect.js";
-import { getUniqueModelBikes } from "../middleware/bike_availability_count.js";
+import { getBikesWithAvailability } from "../middleware/bike_availability_count.js";
 
 export const createTourWithItinerary = async (req, res) => {
   try {
@@ -45,20 +45,6 @@ export const createTourWithItinerary = async (req, res) => {
       });
     }
 
-    // Validate existence of all recommended_bikes
-    if (recommended_bikes && recommended_bikes.length > 0) {
-      const validBikes = await Bike.find({
-        _id: { $in: recommended_bikes },
-      }).select("_id");
-
-      if (validBikes.length !== recommended_bikes.length) {
-        return res.status(400).json({
-          success: false,
-          message: "Some recommended bike IDs are invalid",
-        });
-      }
-    }
-
     // Validate country
     if (!["Nepal", "India", "Bhutan"].includes(country)) {
       return res.status(400).json({
@@ -90,9 +76,7 @@ export const createTourWithItinerary = async (req, res) => {
       numberofdays: Number(numberofdays),
       country,
       availability: availability === "true" || availability === true,
-      recommended_bikes: Array.isArray(recommended_bikes)
-        ? recommended_bikes
-        : [],
+      recommended_bikes,
     };
 
     // Upload cover image to Cloudinary
@@ -233,7 +217,6 @@ export const getTourWithItinerary = async (req, res) => {
     });
   }
 };
-
 export const add_bikes = async (req, res) => {
   try {
     let {
@@ -353,6 +336,21 @@ export const get_bikes = async (req, res) => {
     return res.status(500).json({
       message: "Internal server error",
     });
+  }
+};
+
+export const get_bikes_by_model = async (req, res) => {
+  try {
+    const { model } = req.params;
+    const bikes = await getBikesWithAvailability({ bike_model: model });
+    const availableBikes = bikes.filter((b) => b.availability);
+    if (availableBikes.length === 0) {
+      return res.status(404).json({ message: "No bikes found for this model" });
+    }
+    return res.status(200).json(availableBikes);
+  } catch (error) {
+    console.log("Error in get_bikes_by_model:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -547,18 +545,5 @@ export const update_bike_condition = async (req, res) => {
     return res.status(500).json({
       message: "Internal server error",
     });
-  }
-};
-
-export const get_unique_bike_models = async (req, res) => {
-  try {
-    const bikes = await getUniqueModelBikes();
-    return res.status(200).json({
-      message: "Unique bike models fetched successfully",
-      bikes,
-    });
-  } catch (error) {
-    console.error("Error fetching unique bike models:", error);
-    return res.status(500).json({ message: "Internal server error" });
   }
 };

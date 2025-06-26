@@ -8,7 +8,6 @@ import {
   get_all_bikes,
   delete_bike,
   update_bike_condition,
-  get_unique_bike_models,
 } from "../controller/admincontroller.js";
 import { respond_booking, get_bikes } from "../controller/admincontroller.js";
 
@@ -17,7 +16,6 @@ const router = Router();
 // router.use(is_admin);
 router.post("/add-tour", createTourWithItinerary);
 router.get("/tour/:tourId", getTourWithItinerary);
-router.get("/unique-bike-models", get_unique_bike_models);
 
 router.post("/add-bike", add_bikes);
 router.delete("/delete-bike/:bike_number", delete_bike);

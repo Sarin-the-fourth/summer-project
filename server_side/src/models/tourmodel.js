@@ -60,12 +60,10 @@ const tourSchema = new mongoose.Schema({
     required: true,
   },
 
-  recommended_bikes: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Bike",
-    },
-  ],
+  recommended_bikes: {
+    type: String,
+    required: true,
+  },
 });
 
 const Tours = mongoose.model("Tour", tourSchema);

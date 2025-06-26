@@ -60,17 +60,3 @@ export const getBikeModelCounts = async () => {
     },
   ]);
 };
-
-export const getUniqueModelBikes = async () => {
-  return await Bike.aggregate([
-    {
-      $group: {
-        _id: "$bike_model",
-        bike: { $first: "$$ROOT" },
-      },
-    },
-    {
-      $replaceRoot: { newRoot: "$bike" },
-    },
-  ]);
-};

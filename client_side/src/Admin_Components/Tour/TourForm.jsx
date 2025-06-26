@@ -1,26 +1,8 @@
 import { useState } from "react";
-import { getUniqueModelBikes } from "../../../../server_side/src/middleware/bike_availability_count";
 
-const TourForm = ({ onNext, tourData, setTourData, bikes = [] }) => {
+const TourForm = ({ onNext, tourData, setTourData }) => {
   const [coverPreview, setCoverPreview] = useState("");
   const [galleryPreviews, setGalleryPreviews] = useState([]);
-  const [recommendedBikes, setRecommendedBikes] = useState(
-    tourData.recommended_bikes || []
-  );
-
-  useEffect(() => {
-    setTourData((prev) => ({
-      ...prev,
-      recommended_bikes: recommendedBikes,
-    }));
-  }, [recommendedBikes]);
-
-  const handleRecommendedBikeChange = (e) => {
-    const selectedOptions = Array.from(e.target.selectedOptions).map(
-      (opt) => opt.value
-    );
-    setRecommendedBikes(selectedOptions);
-  };
 
   const handleCoverImageChange = (e) => {
     const file = e.target.files?.[0];
@@ -68,6 +50,11 @@ const TourForm = ({ onNext, tourData, setTourData, bikes = [] }) => {
           { label: "Altitude (m)", key: "altitude", type: "number" },
           { label: "Price", key: "price", type: "number" },
           { label: "Number of Days", key: "numberofdays", type: "number" },
+          {
+            label: "Recommended Bikes",
+            key: "recommended_bikes",
+            type: "text",
+          },
         ].map(({ label, key, type }) => (
           <div key={key}>
             <label className="block text-md font-montserrat text-white mb-1">
@@ -122,13 +109,6 @@ const TourForm = ({ onNext, tourData, setTourData, bikes = [] }) => {
 
         <div>
           <label className="block text-md font-montserrat text-white  mb-1">
-            Recommended Bikes
-          </label>
-
-        </div>
-
-        <div>
-          <label className="block text-md font-montserrat text-white  mb-1"> 
             Availability
           </label>
           <select
