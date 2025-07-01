@@ -1,66 +1,78 @@
-import {mongoose} from "mongoose";
+import mongoose from "mongoose";
 
-const bookingSchema = new mongoose.Schema({
+const bookingSchema = new mongoose.Schema(
+  {
     tour: {
-        type:  mongoose.Schema.Types.ObjectId,
-        ref: "Tour",
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Tour",
+      required: true,
     },
 
-
-    
     client_name: {
-        type: String, 
-        required: true,
-        trim: true
+      type: String,
+      required: true,
+      trim: true,
     },
 
     client_phone: {
-        type: String,
-        trim: true
+      type: String,
+      trim: true,
     },
 
     email: {
-        type: String,
-        lowercase: true,
-        required: true,
+      type: String,
+      lowercase: true,
+      required: true,
     },
 
     pax_no: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true,
     },
 
-    bike: [{
+    bike: [
+      {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Bike",
-        required: true
-    }],
+        required: true,
+      },
+    ],
+
+    assigned_bike: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Bike",
+        required: false,
+      },
+    ],
 
     start_date: {
-        type: Date,
-        required: true
+      type: Date,
+      required: true,
     },
     end_date: {
-        type: Date,
-        required: true
+      type: Date,
+      required: true,
+    },
+
+    enquiry: {
+      type: String,
     },
 
     guide: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
-    
+
     status: {
-        type: String,
-        enum: ['pending', 'approved', 'rejected', 'completed'],
-        default: 'pending'
-    }
-},
-{timestamp:true}
+      type: String,
+      enum: ["pending", "approved", "cancelled", "confirmed", "completed"],
+      default: "pending",
+    },
+  },
+  { timestamp: true }
 );
 
-const Booking = mongoose.model('Booking', bookingSchema);
+const Booking = mongoose.model("Booking", bookingSchema);
 
-export default Booking
-
+export default Booking;

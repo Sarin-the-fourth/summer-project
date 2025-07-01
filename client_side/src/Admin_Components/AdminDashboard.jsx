@@ -8,6 +8,8 @@ import { Navigate } from "react-router-dom";
 import Details from "./Bike/Details";
 import Managebike from "./Bike/Managebike";
 import AddBikeWizard from "./Bike/Addbikewizard";
+import Pending from "./Bookings/Pending";
+import Approved from "./Bookings/Approved";
 
 const AdminDashboard = () => {
   const { isLoggedIn } = useAuthStore();
@@ -18,6 +20,8 @@ const AdminDashboard = () => {
   const [showBikeWizard, setShowBikeWizard] = useState(false);
   const [showBikeDetails, setShowBikeDetails] = useState(false);
   const [showManageBike, setShowManageBike] = useState(false);
+  const [showPendingBooking, setshowPendingBooking] = useState(false);
+  const [showApproveBooking, setshowApproveBooking] = useState(false);
 
   const handleSidebarItemClick = () => {
     setShowWelcome(false);
@@ -29,6 +33,8 @@ const AdminDashboard = () => {
     setShowWelcome(false);
     setShowBikeDetails(false);
     setShowManageBike(false);
+    setshowPendingBooking(false);
+    setshowApproveBooking(false);
   };
 
   const handleAddBikeWizardClick = () => {
@@ -37,6 +43,8 @@ const AdminDashboard = () => {
     setShowWelcome(false);
     setShowBikeDetails(false);
     setShowManageBike(false);
+    setshowPendingBooking(false);
+    setshowApproveBooking(false);
   };
 
   const handleBikeDetails = () => {
@@ -45,10 +53,34 @@ const AdminDashboard = () => {
     setShowBikeWizard(false);
     setShowWelcome(false);
     setShowManageBike(false);
+    setshowPendingBooking(false);
+    setshowApproveBooking(false);
   };
 
   const handleManageBike = () => {
     setShowManageBike(true);
+    setShowBikeDetails(false);
+    setShowTourForm(false);
+    setShowBikeWizard(false);
+    setShowWelcome(false);
+    setshowPendingBooking(false);
+    setshowApproveBooking(false);
+  };
+
+  const handlePendingBooking = () => {
+    setshowPendingBooking(true);
+    setShowManageBike(false);
+    setShowBikeDetails(false);
+    setShowTourForm(false);
+    setShowBikeWizard(false);
+    setShowWelcome(false);
+    setshowApproveBooking(false);
+  };
+
+  const handleApproveBooking = () => {
+    setshowApproveBooking(true);
+    setshowPendingBooking(false);
+    setShowManageBike(false);
     setShowBikeDetails(false);
     setShowTourForm(false);
     setShowBikeWizard(false);
@@ -63,6 +95,8 @@ const AdminDashboard = () => {
         onAddBikeWizardClick={handleAddBikeWizardClick}
         onDetailsClick={handleBikeDetails}
         onManageBikeClick={handleManageBike}
+        onPendingBookingClick={handlePendingBooking}
+        onApproveBookingClick={handleApproveBooking}
       />
       <div className="flex flex-col p-4 space-y-4">
         <Searchbar />
@@ -75,6 +109,12 @@ const AdminDashboard = () => {
         )}
         {showManageBike && (
           <Managebike onClose={() => setShowManageBike(false)} />
+        )}
+        {showPendingBooking && (
+          <Pending onClose={() => setshowPendingBooking(false)} />
+        )}
+        {showApproveBooking && (
+          <Approved onClose={() => setshowApproveBooking(false)} />
         )}
         {showWelcome && !showTourForm && <Welcomepage />}
       </div>

@@ -6,6 +6,7 @@ const AddExistingBikeForm = () => {
     bike_number: "",
     bike_model: "",
     condition: "",
+    isNewModel: false,
   });
 
   const { addBike, loadingAddBike } = useAdminStore();
@@ -21,6 +22,7 @@ const AddExistingBikeForm = () => {
       bike_number: "",
       bike_model: "",
       condition: "",
+      isNewModel: false,
     });
   };
 

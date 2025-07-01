@@ -1,4 +1,3 @@
-import Bike from "../models/bikemodel.js";
 import Booking from "../models/bookingmodel.js";
 import Tours from "../models/tourmodel.js";
 import Itinerary from "../models/itinerarymodel.js";
@@ -28,6 +27,7 @@ export const book_tour = async (req, res) => {
       guide,
       pax_no,
       bike,
+      enquiry,
     } = req.body;
 
     if (!tour) {
@@ -64,8 +64,7 @@ export const book_tour = async (req, res) => {
       !pax_no ||
       !start_date ||
       guide === undefined ||
-      !bike ||
-      !Array.isArray(bike)
+      !bike
     ) {
       return res.status(400).json({
         message: "All fields are required",
@@ -81,6 +80,7 @@ export const book_tour = async (req, res) => {
       start_date,
       end_date,
       guide,
+      enquiry,
       bike,
     });
 

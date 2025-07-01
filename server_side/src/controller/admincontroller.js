@@ -23,6 +23,8 @@ export const createTourWithItinerary = async (req, res) => {
       gallery_images,
       itinerary,
       recommended_bikes, // changed from recommended_bike
+      includes,
+      excludes,
     } = req.body;
 
     // Validate required fields
@@ -36,7 +38,9 @@ export const createTourWithItinerary = async (req, res) => {
       !numberofdays ||
       !country ||
       !cover_image ||
-      !itinerary
+      !itinerary ||
+      !includes ||
+      !excludes
     ) {
       return res.status(400).json({
         success: false,
@@ -77,6 +81,8 @@ export const createTourWithItinerary = async (req, res) => {
       country,
       availability: availability === "true" || availability === true,
       recommended_bikes,
+      includes,
+      excludes,
     };
 
     // Upload cover image to Cloudinary
@@ -85,23 +91,9 @@ export const createTourWithItinerary = async (req, res) => {
         const uploadResponse = await cloudinary.uploader.upload(cover_image, {
           folder: "Tours/CoverImages",
           quality: "auto:best",
-          format: "auto",
-          eager: [
-            {
-              width: 1200,
-              crop: "scale", // Maintain aspect ratio
-              quality: "auto:best",
-            },
-          ],
-          transformation: [{ quality: "auto:best" }, { fetch_format: "auto" }],
         });
 
-        // Store both original and transformed versions
-        tourData.cover_image = {
-          original: uploadResponse.secure_url,
-          thumbnail: uploadResponse.eager[0].secure_url,
-          public_id: uploadResponse.public_id,
-        };
+        tourData.cover_image = uploadResponse.secure_url;
       } catch (err) {
         console.error("Error uploading cover image:", err);
         return res.status(400).json({
@@ -217,6 +209,7 @@ export const getTourWithItinerary = async (req, res) => {
     });
   }
 };
+
 export const add_bikes = async (req, res) => {
   try {
     let {
@@ -227,66 +220,116 @@ export const add_bikes = async (req, res) => {
       bike_image,
       bike_description,
       bike_price,
+      isNewModel,
     } = req.body;
 
-    const existingModel = await Bike.findOne({ bike_model });
-
-    if (existingModel) {
-      if (!bike_brand) bike_brand = existingModel.bike_brand;
-      if (!bike_description) bike_description = existingModel.bike_description;
-      if (!bike_image) bike_image = existingModel.bike_image;
-      if (!bike_price) bike_price = existingModel.bike_price;
-    }
-
-    if (!existingModel) {
+    // Validate isNewModel flag
+    if (typeof isNewModel === "undefined") {
       return res.status(400).json({
-        message: "Bike model not found. Please check the model name.",
+        message: "isNewModel flag is required in the request body",
       });
     }
 
-    if (
-      !bike_number ||
-      !bike_brand ||
-      !bike_model ||
-      !condition ||
-      !bike_image ||
-      !bike_description ||
-      !bike_price
-    ) {
-      return res
-        .status(400)
-        .json({ message: "All required fields must be provided" });
-    }
-
-    let uploadedBikeImage = bike_image;
-    if (bike_image && bike_image.startsWith("data:image")) {
-      try {
-        const uploadResponse = await cloudinary.uploader.upload(bike_image, {
-          folder: "Bikes/Images",
-          transformation: [
-            {
-              width: 500,
-              height: 500,
-              crop: "fill",
-              gravity: "auto",
-              quality: "auto",
-            },
-          ],
-        });
-        uploadedBikeImage = uploadResponse.secure_url;
-      } catch (err) {
-        console.error("Error uploading bike image:", err);
-        return res.status(400).json({
-          message: `Error uploading bike image: ${err.message}`,
-        });
-      }
-    }
-
+    // Check if bike number already exists
     const existingBike = await Bike.findOne({ bike_number });
     if (existingBike) {
       return res.status(409).json({
         message: "Bike number already exists",
       });
+    }
+
+    let uploadedBikeImage = bike_image;
+
+    if (isNewModel === true || isNewModel === "true") {
+      // For new model, require all details
+      if (
+        !bike_number ||
+        !bike_brand ||
+        !bike_model ||
+        !condition ||
+        !bike_image ||
+        !bike_description ||
+        !bike_price
+      ) {
+        return res.status(400).json({
+          message: "All required fields must be provided for a new model",
+        });
+      }
+      // Upload image if needed
+      if (bike_image && bike_image.startsWith("data:image")) {
+        try {
+          const uploadResponse = await cloudinary.uploader.upload(bike_image, {
+            folder: "Bikes/Images",
+            transformation: [
+              {
+                width: 500,
+                height: 500,
+                crop: "fill",
+                gravity: "auto",
+                quality: "auto",
+              },
+            ],
+          });
+          uploadedBikeImage = uploadResponse.secure_url;
+        } catch (err) {
+          console.error("Error uploading bike image:", err);
+          return res.status(400).json({
+            message: `Error uploading bike image: ${err.message}`,
+          });
+        }
+      }
+    } else {
+      // Existing model: fetch details from DB
+      const existingModel = await Bike.findOne({ bike_model });
+      if (!existingModel) {
+        return res.status(400).json({
+          message: "Bike model not found. Please check the model name.",
+        });
+      }
+      // Use provided values if present, otherwise inherit from existing model
+      if (!bike_brand) bike_brand = existingModel.bike_brand;
+      if (!bike_description) bike_description = existingModel.bike_description;
+      if (!bike_image) bike_image = existingModel.bike_image;
+      if (!bike_price) bike_price = existingModel.bike_price;
+      // After inheriting the image, assign uploadedBikeImage
+      uploadedBikeImage = bike_image;
+      // Validate required fields after fallback
+      if (
+        !bike_number ||
+        !bike_brand ||
+        !bike_model ||
+        !condition ||
+        !bike_image ||
+        !bike_description ||
+        !bike_price
+      ) {
+        return res
+          .status(400)
+          .json({ message: "All required fields must be provided" });
+      }
+      // Upload image if provided as data URI
+      if (bike_image && bike_image.startsWith("data:image")) {
+        try {
+          const uploadResponse = await cloudinary.uploader.upload(bike_image, {
+            folder: "Bikes/Images",
+            transformation: [
+              {
+                width: 500,
+                height: 500,
+                crop: "fill",
+                gravity: "auto",
+                quality: "auto",
+              },
+            ],
+          });
+          uploadedBikeImage = uploadResponse.secure_url;
+        } catch (err) {
+          console.error("Error uploading bike image:", err);
+          return res.status(400).json({
+            message: `Error uploading bike image: ${err.message}`,
+          });
+        }
+      }
     }
 
     const addBike = new Bike({
@@ -297,6 +340,7 @@ export const add_bikes = async (req, res) => {
       bike_image: uploadedBikeImage,
       bike_description,
       bike_price,
+      available: true,
     });
 
     await addBike.save();
@@ -400,12 +444,32 @@ export const delete_bike = async (req, res) => {
   }
 };
 
+export const get_all_bookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find()
+      .select(
+        "client_name client_phone email pax_no start_date end_date guide status"
+      )
+      .populate("tour", "name")
+      .populate("bike", "bike_model");
+    return res.status(200).json({ message: "All Bookings Fetched!", bookings });
+  } catch (error) {
+    console.log("Error in get_all_bookings: ", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export const get_approved_bookings = async (req, res) => {
   try {
-    const bookings = await Booking.find({ status: "approved" })
+    const bookings = await Booking.find({
+      status: { $in: ["approved", "confirmed"] },
+    })
       .populate("tour", "name location price numberofdays availability")
-      .populate("bike", "bike_number bike_model availability")
-      .select("client_name client_phone email pax_no name bike");
+      .populate("bike", "bike_number bike_brand bike_model availability")
+      .populate("assigned_bike", "bike_brand bike_model bike_number")
+      .select(
+        "client_name client_phone email start_date end_date assigned_bike pax_no tour guide bike"
+      );
     if (!bookings || bookings.length === 0) {
       return res.status(404).json({ message: "No bookings found" });
     }
@@ -425,8 +489,10 @@ export const get_pending_bookings = async (req, res) => {
   try {
     const bookings = await Booking.find({ status: "pending" })
       .populate("tour", "name location price numberofdays availability")
-      .populate("bike", "bike_number bike_model availability")
-      .select("client_name client_phone email pax_no name bike");
+      .populate("bike", "bike_number bike_brand bike_model availability")
+      .select(
+        "client_name client_phone email start_date end_date guide enquiry pax_no tour bike"
+      );
     if (!bookings || bookings.length === 0) {
       return res.status(404).json({ message: "No bookings found" });
     }
@@ -436,6 +502,22 @@ export const get_pending_bookings = async (req, res) => {
     });
   } catch (error) {
     console.log("Error in get_bookings:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+export const delete_pending_bookings = async (req, res) => {
+  try {
+    const bookingId = req.params.bookingId;
+    const deleteBooking = await Booking.findOneAndDelete(bookingId);
+
+    if (!deleteBooking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+  } catch (error) {
+    console.log("Error deleting pending bookings: ", error);
     return res.status(500).json({
       message: "Internal server error",
     });
@@ -483,12 +565,15 @@ export const respond_booking = async (req, res) => {
         .json({ message: "Booking ID and status are required" });
     }
 
-    const validStatuses = ["approved", "rejected", "completed"];
+    const validStatuses = ["approved", "confirmed", "cancelled", "completed"];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: "Invalid status" });
     }
 
-    const booking = await Booking.findById(bookingId);
+    const booking = await Booking.findById(bookingId).populate(
+      "tour",
+      "name location numberofdays"
+    );
     if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
     }
@@ -499,9 +584,35 @@ export const respond_booking = async (req, res) => {
     if (status === "approved") {
       await sendMail(
         booking.email,
-        "Booking Confirmation",
-        `Dear ${booking.client_name},\n\nYour booking has been approved! We're excited to have you on board.\n\nThank you for choosing us.\n\nBest regards,\nThe Team`
+        "Welcome Aboard! Your Booking Has Been Confirmed",
+        `Dear ${booking.client_name},
+        
+        We are thrilled to inform you that your booking has been confirmed!  
+        Thank you for choosing our service — we can't wait to take you on an unforgettable journey.
+
+        Tour Details:
+        - Tour Name: ${booking.tour.name}
+        - Tour Location: ${booking.tour.location}
+        - Number of Days: ${booking.tour.numberofdays}
+
+        Here's what happens next:
+        - Our team is preparing everything for your upcoming tour.
+        - You'll receive further details about your itinerary and assigned bikes shortly.
+        - If you have any questions, feel free to reach out to us anytime.
+        
+         **Stay connected on WhatsApp:**
+        - Tour Coordinator: +977-9851054001
+        
+        **To help us serve you better, please reply to this email with your active WhatsApp number.** This helps us send you updates and provide quick assistance during the tour.
+        
+        We look forward to hosting you soon!
+        
+        Warm regards,  
+        The Team`
       );
+      booking.status = "confirmed";
+    } else {
+      booking.status = status;
     }
     await booking.save();
 
@@ -511,6 +622,38 @@ export const respond_booking = async (req, res) => {
     });
   } catch (error) {
     console.log("Error in respond_booking:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+export const edit_booking = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+    const { start_date, pax_no, assigned_bike } = req.body;
+    if (!bookingId) {
+      return res.status(400).json({ message: "Booking ID is required" });
+    }
+    if (!start_date || !pax_no || !assigned_bike) {
+      return res.status(400).json({
+        message: "Start date, pax number, and assigned bike are required",
+      });
+    }
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+    booking.start_date = new Date(start_date);
+    booking.pax_no = pax_no;
+    booking.assigned_bike = assigned_bike;
+    await booking.save();
+    return res.status(200).json({
+      message: "Booking updated successfully",
+      booking,
+    });
+  } catch (error) {
+    console.log("Error in edit_booking:", error);
     return res.status(500).json({
       message: "Internal server error",
     });
@@ -545,5 +688,69 @@ export const update_bike_condition = async (req, res) => {
     return res.status(500).json({
       message: "Internal server error",
     });
+  }
+};
+
+export const assign_bikes = async (req, res) => {
+  try {
+    const { bookingId, bikeNumbers } = req.body;
+
+    // Validate input
+    if (!bookingId || !Array.isArray(bikeNumbers) || bikeNumbers.length === 0) {
+      return res
+        .status(400)
+        .json({ error: "bookingId and bikeNumbers are required" });
+    }
+
+    // Find bike IDs for the given bike numbers
+    const bikes = await Bike.find({ bike_number: { $in: bikeNumbers } });
+    if (!bikes || bikes.length !== bikeNumbers.length) {
+      return res.status(404).json({ error: "One or more bikes not found" });
+    }
+    const bikeIds = bikes.map((b) => b._id);
+
+    // Find the booking to get start_date and end_date
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    // Update booking with assigned bikes and approve
+    booking.assigned_bike = bikeIds;
+    booking.status = "approved";
+    await booking.save();
+
+    // If current date is between booking start and end date, make bikes unavailable
+    const today = new Date();
+    if (booking.start_date <= today && booking.end_date >= today) {
+      await Bike.updateMany(
+        { _id: { $in: bikeIds } },
+        { $set: { available: false } }
+      );
+    }
+
+    res.status(200).json({ message: "Bikes assigned successfully", booking });
+  } catch (err) {
+    console.error("Error in assign_bikes:", err);
+    res.status(500).json({ error: "Failed to assign bikes" });
+  }
+};
+
+export const free_bikes_after_tour = async () => {
+  const today = new Date();
+
+  const bookings = await Booking.find({
+    end_date: { $lt: today },
+    status: { $ne: "completed" },
+  });
+
+  for (const booking of bookings) {
+    await Bike.updateMany(
+      { _id: { $in: booking.assigned_bike } },
+      { $set: { available: true } }
+    );
+
+    booking.status = "completed";
+    await booking.save();
   }
 };

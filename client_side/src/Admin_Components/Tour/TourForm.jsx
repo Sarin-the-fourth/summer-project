@@ -55,6 +55,8 @@ const TourForm = ({ onNext, tourData, setTourData }) => {
             key: "recommended_bikes",
             type: "text",
           },
+          { label: "Includes", key: "includes", type: "textarea" },
+          { label: "Excludes", key: "excludes", type: "textarea" },
         ].map(({ label, key, type }) => (
           <div key={key}>
             <label className="block text-md font-montserrat text-white mb-1">

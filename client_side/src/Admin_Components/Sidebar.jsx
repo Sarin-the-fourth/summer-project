@@ -6,6 +6,8 @@ const Sidebar = ({
   onAddBikeWizardClick,
   onDetailsClick,
   onManageBikeClick,
+  onPendingBookingClick,
+  onApproveBookingClick,
 }) => {
   const [isTourOpen, setisTourOpen] = useState(false);
   const [isBikeOpen, setisBikeOpen] = useState(false);
@@ -108,10 +110,26 @@ const Sidebar = ({
           {isInquiryOpen && (
             <ul className="ml-10 text-md mb-2 space-y-2 mt-1">
               <li className="hover:text-white">
-                <Link to="#">Pending</Link>
+                <Link
+                  to="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onPendingBookingClick();
+                  }}
+                >
+                  Pending
+                </Link>
               </li>
               <li className="hover:text-white">
-                <Link to="#">Approved</Link>
+                <Link
+                  to="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onApproveBookingClick();
+                  }}
+                >
+                  Approved
+                </Link>
               </li>
             </ul>
           )}

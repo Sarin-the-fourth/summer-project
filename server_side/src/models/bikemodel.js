@@ -39,6 +39,11 @@ const bikeSchema = new mongoose.Schema({
     required: true,
   },
 
+  available: {
+    type: Boolean,
+    default: true,
+  },
+
   count: {
     type: Number,
     default: 1,

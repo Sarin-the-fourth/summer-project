@@ -60,6 +60,16 @@ const tourSchema = new mongoose.Schema({
     required: true,
   },
 
+  includes: {
+    type: String,
+    required: true,
+  },
+
+  excludes: {
+    type: String,
+    required: true,
+  },
+
   recommended_bikes: {
     type: String,
     required: true,

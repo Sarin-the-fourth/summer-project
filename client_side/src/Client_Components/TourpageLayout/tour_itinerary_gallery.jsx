@@ -17,7 +17,7 @@ const Itinerary_Gallery = () => {
       style={{ backgroundImage: `url(${tour?.cover_image})` }}
     >
       {/*Itinerary*/}
-      <div className="absolute inset-0 bg-white opacity-70 z-0"></div>
+      <div className="absolute inset-0 bg-white opacity-75 z-0"></div>
 
       <div className="m-15 z-1">
         <h1 className="flex justify-center text-[#fdb913] text-5xl font-bebas">
@@ -49,7 +49,11 @@ const Itinerary_Gallery = () => {
               onClick={() => openLightbox(img)}
               className="cursor-pointer"
             >
-              <img src={img} alt={`Gallery ${index}`} />
+              <img
+                src={img}
+                alt={`Gallery ${index}`}
+                className="w-30 h-10 object-cover"
+              />
             </div>
           ))}
         </div>

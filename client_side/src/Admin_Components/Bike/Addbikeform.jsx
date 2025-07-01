@@ -14,6 +14,7 @@ const AddBikeForm = () => {
     bike_image: "",
     bike_description: "",
     bike_price: "",
+    isNewModel: true,
   });
 
   const handleImageChange = (e) => {
@@ -49,7 +50,7 @@ const AddBikeForm = () => {
     }
 
     setLoading(true);
-    await addBike(bikeData);
+    await addBike({ ...bikeData, isNewModel: bikeData.isNewModel });
     setLoading(false);
 
     setBikeData({
@@ -60,6 +61,7 @@ const AddBikeForm = () => {
       bike_image: "",
       bike_description: "",
       bike_price: "",
+      isNewModel: true,
     });
     setCoverPreview(null);
   };

@@ -5,18 +5,25 @@ import { toast } from "react-toastify";
 const Managebike = () => {
   const { deletebike, updateBikeCondition } = useAdminStore();
   const [loading, setloading] = useState(false);
-  const [bikeData, setbikeData] = useState({ bike_number: "", condition: "" });
+  const [conditionData, setConditionData] = useState({
+    bike_number: "",
+    condition: "",
+  });
+  const [deleteData, setDeleteData] = useState({ bike_number: "" });
 
   const handleSubmit1 = async (e) => {
     e.preventDefault();
-    if (!bikeData.bike_number || !bikeData.condition) {
+    if (!conditionData.bike_number || !conditionData.condition) {
       toast.error("Please provide bike number and condition.");
       return;
     }
 
     try {
       setloading(true);
-      await updateBikeCondition(bikeData.bike_number, bikeData.condition);
+      await updateBikeCondition(
+        conditionData.bike_number,
+        conditionData.condition
+      );
     } catch (error) {
     } finally {
       setloading(false);
@@ -25,13 +32,13 @@ const Managebike = () => {
 
   const handleSubmit2 = async (e) => {
     e.preventDefault();
-    console.log("Submitting bikeData:", bikeData);
-    if (!bikeData.bike_number) {
+    console.log("Submitting deleteData:", deleteData);
+    if (!deleteData.bike_number) {
       toast.error("Please fill in all required fields.");
       return;
     }
     setloading(true);
-    await deletebike(bikeData.bike_number);
+    await deletebike(deleteData.bike_number);
     setloading(false);
   };
 
@@ -43,18 +50,21 @@ const Managebike = () => {
           Bike Condition
         </h1>
         <label
-          htmlFor="bike_number"
+          htmlFor="bike_number_condition"
           className="text-white block font-montserrat font-bold mb-2"
         >
           Registration Number
         </label>
         <input
           type="text"
-          id="bike_number"
-          name="bike_number"
-          value={bikeData.bike_number}
+          id="bike_number_condition"
+          name="bike_number_condition"
+          value={conditionData.bike_number}
           onChange={(e) =>
-            setbikeData((prev) => ({ ...prev, bike_number: e.target.value }))
+            setConditionData((prev) => ({
+              ...prev,
+              bike_number: e.target.value,
+            }))
           }
           className="p-2 focus:outline-none font-montserrat rounded block w-full bg-white text-black"
           required
@@ -65,9 +75,9 @@ const Managebike = () => {
             Condition
           </label>
           <select
-            value={bikeData.condition || ""}
+            value={conditionData.condition || ""}
             onChange={(e) =>
-              setbikeData({ ...bikeData, condition: e.target.value })
+              setConditionData({ ...conditionData, condition: e.target.value })
             }
             className="w-full px-4 py-2 border font-montserrat border-gray-300 rounded-md focus:outline-none bg-white focus:font-montserrat focus:shadow-2xl"
           >
@@ -95,18 +105,18 @@ const Managebike = () => {
           Delete Bike
         </h1>
         <label
-          htmlFor="bike_number"
+          htmlFor="bike_number_delete"
           className="text-white block font-montserrat font-bold mb-2"
         >
           Enter Bike Number to Delete:
         </label>
         <input
           type="text"
-          id="bike_number"
-          name="bike_number"
-          value={bikeData.bike_number}
+          id="bike_number_delete"
+          name="bike_number_delete"
+          value={deleteData.bike_number}
           onChange={(e) =>
-            setbikeData((prev) => ({ ...prev, bike_number: e.target.value }))
+            setDeleteData((prev) => ({ ...prev, bike_number: e.target.value }))
           }
           className="p-2 focus:outline-none font-montserrat rounded block w-full bg-white text-black"
           required

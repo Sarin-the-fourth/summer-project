@@ -11,6 +11,8 @@ export const useTourStore = create((set) => ({
   itinerary: [],
   loadingTours: true,
 
+  allTours: [],
+
   getTourNepal: async () => {
     try {
       set({ loadingNepal: true });
@@ -46,6 +48,29 @@ export const useTourStore = create((set) => ({
     } catch (error) {
       console.log(error);
     } finally {
+      set({ loadingTours: false });
+    }
+  },
+
+  getAllTours: async () => {
+    try {
+      set({ loadingTours: true });
+
+      const nepalRes = await axiosInstance.get("/user/tours/Nepal");
+      const indiaRes = await axiosInstance.get("/user/tours/India");
+
+      const nepalTours = nepalRes.data?.tours ?? [];
+      const indiaTours = indiaRes.data?.tours ?? [];
+
+      console.log("📦 Nepal Tours:", nepalTours);
+      console.log("📦 India Tours:", indiaTours);
+
+      set({
+        allTours: [...nepalTours, ...indiaTours],
+        loadingTours: false,
+      });
+    } catch (error) {
+      console.error("❌ Error fetching tours:", error);
       set({ loadingTours: false });
     }
   },
