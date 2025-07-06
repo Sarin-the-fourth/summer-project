@@ -2,6 +2,7 @@ import Tour from "../models/tourmodel.js";
 import Bike from "../models/bikemodel.js";
 import Itinerary from "../models/itinerarymodel.js";
 import Booking from "../models/bookingmodel.js";
+import Homepage from "../models/homepagemodel.js";
 import sendMail from "../utils/sendMail.js";
 import cloudinary from "../utils/CloudinaryConnect.js";
 import { getBikesWithAvailability } from "../middleware/bike_availability_count.js";
@@ -207,6 +208,98 @@ export const getTourWithItinerary = async (req, res) => {
       message: "Internal server error",
       error: error.message,
     });
+  }
+};
+
+export const get_all_tours = async (req, res) => {
+  try {
+    const tours = await Tour.find().select(
+      "name description location price numberofdays availability country cover_image gallery_images"
+    );
+    if (!tours || tours.length === 0) {
+      return res.status(404).json({
+        message: "No tours found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      tours,
+    });
+  } catch (error) {
+    console.log("Error in get_all_tours:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+export const get_homepage = async (req, res) => {
+  try {
+    const homepage = await Homepage.findOne()
+      .populate("card")
+      .select("card testimonial gallery");
+    if (!homepage) {
+      return res.status(404).json({
+        message: "Homepage not found",
+      });
+    }
+    res.status(200).json(homepage);
+  } catch (error) {
+    console.error("Error fetching homepage:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+export const updateCard = async (req, res) => {
+  const { homepageId } = req.params;
+  const { card } = req.body;
+
+  if (!Array.isArray(card)) {
+    return res
+      .status(400)
+      .json({ message: "'card' must be an array of tour IDs" });
+  }
+
+  try {
+    const homepage = await Homepage.findById(homepageId);
+    if (!homepage) {
+      return res.status(404).json({ message: "Homepage not found" });
+    }
+
+    homepage.card = card;
+
+    await homepage.save();
+
+    res
+      .status(200)
+      .json({ message: "Cards updated successfully", card: homepage.card });
+  } catch (error) {
+    console.error("Error updating cards:", error);
+    res.status(500).json({ message: "Server error while updating cards" });
+  }
+};
+
+export const update_testimonials = async (req, res) => {
+  const { homepageId } = req.params;
+  const { testimonial } = req.body;
+  try {
+    const homepage = await Homepage.findById(homepageId);
+    if (!homepage) {
+      return res.status(404).json({ message: "Homepage not found" });
+    }
+    homepage.testimonial = testimonial;
+    await homepage.save();
+    res.status(200).json({
+      message: "Testimonials updated successfully",
+      testimonial: homepage.testimonial,
+    });
+  } catch (error) {
+    console.error("Error fetching testimonials:", error);
+    res
+      .status(500)
+      .json({ message: "Server error while fetching testimonials" });
   }
 };
 
@@ -446,12 +539,14 @@ export const delete_bike = async (req, res) => {
 
 export const get_all_bookings = async (req, res) => {
   try {
-    const bookings = await Booking.find()
+    const bookings = await Booking.find({
+      status: { $in: ["confirmed", "cancelled", "completed"] },
+    })
       .select(
         "client_name client_phone email pax_no start_date end_date guide status"
       )
       .populate("tour", "name")
-      .populate("bike", "bike_model");
+      .populate("bike", "bike_number bike_model bike_brand");
     return res.status(200).json({ message: "All Bookings Fetched!", bookings });
   } catch (error) {
     console.log("Error in get_all_bookings: ", error);
@@ -468,7 +563,7 @@ export const get_approved_bookings = async (req, res) => {
       .populate("bike", "bike_number bike_brand bike_model availability")
       .populate("assigned_bike", "bike_brand bike_model bike_number")
       .select(
-        "client_name client_phone email start_date end_date assigned_bike pax_no tour guide bike"
+        "client_name client_phone email start_date end_date assigned_bike pax_no tour guide bike status"
       );
     if (!bookings || bookings.length === 0) {
       return res.status(404).json({ message: "No bookings found" });
@@ -518,6 +613,64 @@ export const delete_pending_bookings = async (req, res) => {
     }
   } catch (error) {
     console.log("Error deleting pending bookings: ", error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+export const get_confirmed_bookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find({ status: "confirmed" })
+      .populate("tour", "name location price numberofdays availability")
+      .populate("bike", "bike_number bike_brand bike_model availability")
+      .select(
+        "client_name client_phone email start_date end_date guide enquiry pax_no assigned_bike tour bike"
+      );
+    if (!bookings || bookings.length === 0) {
+      return res.status(404).json({ message: "No bookings found" });
+    }
+    return res.status(200).json({
+      message: "Bookings fetched successfully",
+      bookings: bookings,
+    });
+  } catch (error) {
+    console.log("Error in get_confirmed_bookings:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const get_booking_history = async (req, res) => {
+  try {
+    const bookings = await Booking.find({
+      status: { $in: ["confirmed", "cancelled", "completed"] },
+    })
+      .populate("tour", "name location price numberofdays availability")
+      .populate("bike", "bike_number bike_brand bike_model availability")
+      .populate("assigned_bike", "bike_brand bike_model bike_number")
+      .select(
+        "client_name client_phone email start_date end_date assigned_bike pax_no tour guide bike"
+      );
+    if (!bookings || bookings.length === 0) {
+      return res.status(404).json({ message: "No booking history found" });
+    }
+    // Sort bookings by start_date in descending order
+    bookings.sort((a, b) => new Date(b.start_date) - new Date(a.start_date));
+    // Format start_date and end_date to ISO date string
+    bookings.forEach((booking) => {
+      booking.start_date = booking.start_date
+        ? new Date(booking.start_date).toISOString().split("T")[0]
+        : "N/A";
+      booking.end_date = booking.end_date
+        ? new Date(booking.end_date).toISOString().split("T")[0]
+        : "N/A";
+    });
+    return res.status(200).json({
+      message: "Booking history fetched successfully",
+      bookings,
+    });
+  } catch (error) {
+    console.log("Error in get_booking_history:", error);
     return res.status(500).json({
       message: "Internal server error",
     });
@@ -632,6 +785,7 @@ export const edit_booking = async (req, res) => {
   try {
     const { bookingId } = req.params;
     const { start_date, pax_no, assigned_bike } = req.body;
+
     if (!bookingId) {
       return res.status(400).json({ message: "Booking ID is required" });
     }
@@ -640,13 +794,46 @@ export const edit_booking = async (req, res) => {
         message: "Start date, pax number, and assigned bike are required",
       });
     }
-    const booking = await Booking.findById(bookingId);
+
+    const booking = await Booking.findById(bookingId).populate("tour");
     if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
     }
-    booking.start_date = new Date(start_date);
+
+    const newStartDate = new Date(start_date);
+    const newEndDate = new Date(newStartDate);
+    newEndDate.setDate(newStartDate.getDate() + booking.tour.numberofdays);
+
+    const overlappingBooking = await Booking.findOne({
+      _id: { $ne: bookingId }, // exclude current booking
+      assigned_bike: { $in: assigned_bike },
+      status: { $in: ["approved", "confirmed"] },
+      $or: [
+        {
+          // Case 1: New booking starts during an existing booking
+          start_date: { $lt: newEndDate },
+          end_date: { $gt: newStartDate },
+        },
+        {
+          // Case 2: New booking encompasses an existing booking
+          start_date: { $gte: newStartDate },
+          end_date: { $lte: newEndDate },
+        },
+      ],
+    });
+
+    if (overlappingBooking) {
+      return res.status(400).json({
+        error: "Bike is already booked for the selected dates.",
+      });
+    }
+
+    // Update booking dates
+    booking.start_date = newStartDate;
+    booking.end_date = newEndDate;
     booking.pax_no = pax_no;
     booking.assigned_bike = assigned_bike;
+
     await booking.save();
     return res.status(200).json({
       message: "Booking updated successfully",
@@ -717,6 +904,25 @@ export const assign_bikes = async (req, res) => {
 
     // Update booking with assigned bikes and approve
     booking.assigned_bike = bikeIds;
+
+    const overlappingBooking = await Booking.findOne({
+      _id: { $ne: bookingId },
+      assigned_bike: { $in: bikeIds }, // any overlapping bike
+      status: { $in: ["approved", "confirmed"] },
+      $or: [
+        {
+          start_date: { $lte: booking.end_date },
+          end_date: { $gte: booking.start_date },
+        },
+      ],
+    });
+
+    if (overlappingBooking) {
+      return res.status(400).json({
+        error: "Bike is already booked for the selected dates.",
+      });
+    }
+
     booking.status = "approved";
     await booking.save();
 

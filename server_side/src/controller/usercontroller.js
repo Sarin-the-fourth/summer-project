@@ -2,6 +2,7 @@ import Booking from "../models/bookingmodel.js";
 import Tours from "../models/tourmodel.js";
 import Itinerary from "../models/itinerarymodel.js";
 import { getBikesWithAvailability } from "../middleware/bike_availability_count.js";
+import Homepage from "../models/homepagemodel.js";
 
 //Get all bikes
 export const get_bikes = async (req, res) => {
@@ -39,24 +40,6 @@ export const book_tour = async (req, res) => {
     //set end date based on number of days in the tour
     const end_date = new Date(start_date);
     end_date.setDate(end_date.getDate() + (tour.numberofdays - 1));
-
-    // Check for existing approved bookings that overlap the requested date range
-    const existingBooking = await Booking.find({
-      tour: tourId,
-      status: "approved",
-      start_date: { $lte: new Date(end_date) },
-      end_date: { $gte: new Date(start_date) },
-    });
-
-    if (existingBooking.length > 0) {
-      return res.status(409).json({
-        message: `Tour is unavailable from ${new Date(
-          start_date
-        ).toDateString()} to ${new Date(
-          end_date
-        ).toDateString()}. Please choose a different date range.`,
-      });
-    }
 
     if (
       !client_name ||
@@ -164,6 +147,25 @@ export const get_all_tours = async (req, res) => {
     return res.status(200).json(tours);
   } catch (error) {
     console.log("Error in get_all_tours:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+export const get_homepage = async (req, res) => {
+  try {
+    const homepage = await Homepage.findOne()
+      .populate("card", "name description numberofdays cover_image")
+      .select("card testimonial gallery");
+    if (!homepage) {
+      return res.status(404).json({
+        message: "Homepage not found",
+      });
+    }
+    return res.status(200).json(homepage);
+  } catch (error) {
+    console.log("Error in get_homepage:", error);
     return res.status(500).json({
       message: "Internal server error",
     });

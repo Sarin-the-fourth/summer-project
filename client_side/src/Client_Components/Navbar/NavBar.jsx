@@ -22,7 +22,7 @@ const NavBar = () => {
 
   return (
     <nav className={`navbar-wrapper ${visible ? "" : "hide-navbar"}`}>
-      <div className="navbar bg-white/30 backdrop-blur-sm border-0 px-8 py-5 font-bebas flex justify-center sticky top-0 z-99">
+      <div className="navbar bg-white/30 backdrop-blur-sm border-0 px-8 py-5 font-bebas flex justify-center sticky transition-all duration-300 top-0 z-99">
         <div className="absolute left-5 top-1 bottom-1 flex items-center h-15 px-4">
           <Link to="/" className="text-lg cursor-pointer">
             <img src="/wtalogo1.ico" alt="logo" className="h-15" />

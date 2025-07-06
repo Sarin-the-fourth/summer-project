@@ -7,6 +7,9 @@ export const useAdminStore = create((set) => ({
   loadingAddBike: false,
   loadingUpdateCondition: false,
   bookings: [],
+  tour: [],
+  homepage: null,
+  admin: null,
 
   addTour: async (tourdata) => {
     try {
@@ -19,6 +22,19 @@ export const useAdminStore = create((set) => ({
       toast.error(error.response.data.message || "Something went wrong");
     } finally {
       set({ loadingAddTour: false });
+    }
+  },
+
+  fetchAllTours: async () => {
+    try {
+      const res = await axiosInstance.get("/admin/tours");
+      set({ tour: res.data.tours });
+      console.log("Fetched tours:", res.data.tours);
+      return res.data.tours || [];
+    } catch (error) {
+      console.error("Failed to fetch tours:", error);
+      toast.error("Failed to fetch tours");
+      return [];
     }
   },
 
@@ -77,11 +93,22 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  fetchAllBookings: async () => {
+    try {
+      const res = await axiosInstance.get("/admin/bookings");
+      set({ bookings: res.data.bookings });
+      console.log(res.data.bookings);
+    } catch (error) {
+      console.error("Failed to fetch bookings: ", error);
+      toast.error("Failed to fetch bookings");
+      set({ bookings: [] });
+    }
+  },
+
   fetchPendingBookings: async () => {
     try {
       const res = await axiosInstance.get("/admin/bookings/pending");
       set({ bookings: res.data.bookings });
-      toast.success("Pending bookings fetched");
     } catch (error) {
       console.log("Failed to fetch bookings", error);
       toast.error("Failed to fetch bookings");
@@ -123,7 +150,7 @@ export const useAdminStore = create((set) => ({
     try {
       const res = await axiosInstance.get("/admin/bookings/approved");
       set({ bookings: res.data.bookings });
-      toast.success("Approved bookings fetched");
+      console.log(res.data.bookings);
     } catch (error) {
       console.log("Failed to fetch bookings", error);
       toast.error("Failed to fetch bookings");
@@ -162,6 +189,78 @@ export const useAdminStore = create((set) => ({
     } catch (error) {
       console.error("Failed to edit booking:", error);
       toast.error(error.response?.data?.message || "Failed to edit booking");
+    }
+  },
+
+  fetchHomepage: async () => {
+    try {
+      const res = await axiosInstance.get("/admin/get_homepage");
+      set({ homepage: res.data });
+      console.log("Fetched homepage: ", res.data);
+    } catch (error) {
+      console.error("Failed to fetch homepage:", error);
+      toast.error("Failed to fetch homepage");
+      set({ homepage: null });
+    }
+  },
+
+  updateCard: async (homepageId, cardData) => {
+    try {
+      const res = await axiosInstance.put(`/admin/update-card/${homepageId}`, {
+        card: cardData,
+      });
+      toast.success(res.data.message || "Card updated successfully");
+    } catch (error) {
+      console.error("Failed to update card:", error);
+      toast.error(error.response?.data?.message || "Failed to update card");
+    }
+  },
+
+  updateTestimonials: async (homepageId, testimonialData) => {
+    try {
+      const res = await axiosInstance.put(
+        `/admin/update_testimonials/${homepageId}`,
+        { testimonial: testimonialData }
+      );
+      toast.success(res.data.message || "Testimonials updated successfully");
+    } catch (error) {
+      console.error("Failed to update testimonials:", error);
+      toast.error(
+        error.response?.data?.message || "Failed to update testimonials"
+      );
+    }
+  },
+
+  updateProfile: async (profileData, id) => {
+    try {
+      const res = await axiosInstance.put(
+        `/admin/update-profile/${id}`,
+        profileData
+      );
+
+      if (res.success) {
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log("Error in update profile: ", error);
+      toast.error(error.response.data.message || "Failed to update profile");
+    }
+  },
+
+  checkAuth: async () => {
+    try {
+      const res = await axiosInstance.get("auth/admin/checkauth");
+      if (res.data.success) {
+        console.log(res.data);
+        set({ admin: res.data.admin });
+      } else {
+        set({ admin: null });
+        toast.error("Authentication failed");
+      }
+    } catch (error) {
+      console.error("Error checking authentication:", error);
+      toast.error("Failed to check authentication");
+      set({ admin: null });
     }
   },
 }));

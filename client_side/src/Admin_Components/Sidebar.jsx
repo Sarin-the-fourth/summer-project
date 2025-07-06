@@ -8,10 +8,14 @@ const Sidebar = ({
   onManageBikeClick,
   onPendingBookingClick,
   onApproveBookingClick,
+  onBookingHistoryClick,
+  onEditCardClick,
+  onEditTestimonialClick,
 }) => {
   const [isTourOpen, setisTourOpen] = useState(false);
   const [isBikeOpen, setisBikeOpen] = useState(false);
   const [isInquiryOpen, setisInquiryOpen] = useState(false);
+  const [isHomepageOpen, setisHomepageOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-[rgb(34,40,49)] hidden md:block">
@@ -25,9 +29,37 @@ const Sidebar = ({
       <div className="mt-20 ml-5 font-montserrat text-[#dddd]">
         <legend className="opacity-70 font-light mb-2">Menu</legend>
         <ul className="cursor-pointer pr-2">
-          <li className="font-semibold hover:bg-[black] p-2 rounded-md">
+          <li
+            className="font-semibold hover:bg-[black] p-2 rounded-md"
+            onClick={() => setisHomepageOpen(!isHomepageOpen)}
+          >
             <Link to="#"> Homepage</Link>
           </li>
+          {isHomepageOpen && (
+            <ul className="ml-10 text-md mb-2 space-y-2 mt-1">
+              <li
+                className="hover:text-white"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onEditCardClick();
+                }}
+              >
+                <Link to="#">Edit Cards</Link>
+              </li>
+              <li
+                className="hover:text-white"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onEditTestimonialClick();
+                }}
+              >
+                <Link to="#">Edit Testimonials</Link>
+              </li>
+              <li className="hover:text-white">
+                <Link to="#">Edit Gallery</Link>
+              </li>
+            </ul>
+          )}
 
           <li
             className="font-semibold hover:bg-[black] p-2 rounded-md"
@@ -129,6 +161,17 @@ const Sidebar = ({
                   }}
                 >
                   Approved
+                </Link>
+              </li>
+              <li className="hover:text-white">
+                <Link
+                  to="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onBookingHistoryClick();
+                  }}
+                >
+                  Booking History
                 </Link>
               </li>
             </ul>

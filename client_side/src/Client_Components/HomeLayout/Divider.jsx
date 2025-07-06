@@ -1,4 +1,13 @@
+import { useEffect } from "react";
+import { useHomeStore } from "../../Store/useHomeStore";
+
 const Divider = () => {
+  const { fetchHomepage, homepage } = useHomeStore();
+
+  useEffect(() => {
+    fetchHomepage();
+  }, []);
+
   return (
     <div
       className="flex flex-col justify-center items-center"
@@ -11,20 +20,15 @@ const Divider = () => {
         Testimonials
       </h1>
       <div className="font-pt-sans-narrow text-2xl mb-5">
-        <h2 className="mb-10">
-          The service provided by Wild Tracks Nepal met my expectations and the
-          experience was fabulous.
-        </h2>
-
-        <h2 className="mb-10">
-          The staff of Wild Tracks Nepal were very supportive and always ready
-          to help us in any way possible.
-        </h2>
-
-        <h2 className="mb-10">
-          The staff of Wild Tracks Nepal were very supportive and always ready
-          to help us in any way possible.
-        </h2>
+        {homepage?.testimonial?.length > 0 && (
+          <>
+            {homepage.testimonial.slice(0, 3).map((testimonial, index) => (
+              <h2 key={index} className="mb-10">
+                {testimonial}
+              </h2>
+            ))}
+          </>
+        )}
       </div>
     </div>
   );

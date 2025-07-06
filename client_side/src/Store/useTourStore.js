@@ -62,15 +62,15 @@ export const useTourStore = create((set) => ({
       const nepalTours = nepalRes.data?.tours ?? [];
       const indiaTours = indiaRes.data?.tours ?? [];
 
-      console.log("📦 Nepal Tours:", nepalTours);
-      console.log("📦 India Tours:", indiaTours);
+      console.log("Nepal Tours:", nepalTours);
+      console.log("India Tours:", indiaTours);
 
       set({
         allTours: [...nepalTours, ...indiaTours],
         loadingTours: false,
       });
     } catch (error) {
-      console.error("❌ Error fetching tours:", error);
+      console.error("Error fetching tours:", error);
       set({ loadingTours: false });
     }
   },

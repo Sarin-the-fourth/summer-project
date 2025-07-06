@@ -12,6 +12,7 @@ const Tour = () => {
   const { getTourById } = useTourStore();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     getTourById(id);
   }, [id]);
 

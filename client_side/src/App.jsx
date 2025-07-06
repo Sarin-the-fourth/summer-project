@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import Footer from "./Client_Components/Footer";
 import HomeLayout from "./Client_Components/HomeLayout/HomeLayout";
 import { Bounce, ToastContainer } from "react-toastify";
@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import NavBar from "./Client_Components/Navbar/NavBar";
 import AdminDashboard from "./Admin_Components/AdminDashboard";
 import TourWizard from "./Admin_Components/Tour/TourWizard";
+import { useAuthStore } from "./Store/useAuthStore";
 
 function App() {
   const location = useLocation();
@@ -20,12 +21,22 @@ function App() {
   const { getTourNepal, getTourIndia, loadingNepal, loadingIndia } =
     useTourStore();
 
+  const { checkAuth, loadingCheckAuth, admin } = useAuthStore();
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
   useEffect(() => {
     getTourIndia();
     getTourNepal();
   }, [getTourIndia, getTourNepal]);
 
   if (loadingIndia || loadingNepal) {
+    return <div>Loading...</div>;
+  }
+
+  if (loadingCheckAuth) {
     return <div>Loading...</div>;
   }
 
@@ -38,10 +49,21 @@ function App() {
         <Route path="/contactus" element={<Contact />} />
         <Route path="/tour/:id" element={<Tour />} />
 
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route
+          path="/admin/login"
+          element={!admin ? <AdminLogin /> : <Navigate to="/admin" />}
+        />
+        <Route
+          path="/admin"
+          element={
+            admin ? <AdminDashboard /> : <Navigate to={"/admin/login"} />
+          }
+        />
 
-        <Route path="/tour-form" element={<TourWizard />} />
+        <Route
+          path="/tour-form"
+          element={admin ? <TourWizard /> : <Navigate to={"/admin/login"} />}
+        />
       </Routes>
       {!isadminroute && <Footer />}
 

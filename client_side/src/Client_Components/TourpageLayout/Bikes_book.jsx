@@ -26,7 +26,11 @@ const Book = () => {
           <div className="space-y-5">
             <h1 className="text-center mt-5 font-bebas text-6xl">Garage</h1>
             <div className="grid grid-cols-2">
-              {bikes.map((items) => (
+              {[
+                ...new Map(
+                  bikes.map((item) => [item.bike_model, item])
+                ).values(),
+              ].map((items) => (
                 <div className="ml-5 flex flex-col items-center justify-center space-y-2">
                   <img
                     className="w-70 h-70 border-1"
