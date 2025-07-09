@@ -176,7 +176,7 @@ export const get_homepage = async (req, res) => {
 export const get_tours_country = async (req, res) => {
   try {
     const { country } = req.params;
-    const tours = await Tours.find({ country }).select(
+    const tours = await Tours.find({ country, availability: true }).select(
       "name description location price numberofdays availability country itinerary"
     );
     return res.status(200).json({ tours });

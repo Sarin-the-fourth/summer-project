@@ -3,8 +3,13 @@ import { useAdminStore } from "../../Store/useAdminStore";
 import { useBikeStore } from "../../store/useBikeStore";
 
 const Approved = () => {
-  const { fetchApprovedBookings, bookings, respondBookings, editBooking } =
-    useAdminStore();
+  const {
+    fetchApprovedBookings,
+    bookings,
+    respondBookings,
+    editBooking,
+    freeAssignedBike,
+  } = useAdminStore();
   const { fetchBikes, bikes } = useBikeStore();
   const [loadingStates, setLoadingStates] = useState({});
   const [confirmedStates, setConfirmedStates] = useState({});
@@ -24,6 +29,7 @@ const Approved = () => {
     setLoadingStates((prev) => ({ ...prev, [bookingID]: true }));
     try {
       await respondBookings(bookingID, "cancelled");
+      await freeAssignedBike(bookingID, "cancelled");
       await fetchApprovedBookings();
     } catch (err) {
       console.error("Error cancelling booking:", err);

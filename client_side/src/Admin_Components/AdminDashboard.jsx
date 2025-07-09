@@ -11,6 +11,8 @@ import Approved from "./Bookings/Approved";
 import BookingHistory from "./Bookings/BookingHistory";
 import EditCard from "./Homepage/Editcard";
 import EditTestimonials from "./Homepage/Edittestimonials";
+import EditTourDetails from "./Tour/EditTourDetails";
+import DeleteTour from "./Tour/DeleteTour";
 
 const AdminDashboard = () => {
   const [showTourForm, setShowTourForm] = useState(false);
@@ -23,6 +25,8 @@ const AdminDashboard = () => {
   const [showBookingHistory, setshowBookingHistory] = useState(false);
   const [showEditCard, setShowEditCard] = useState(false);
   const [showEditTestimonials, setShowTestimonials] = useState(false);
+  const [showEditTourDetails, setShowEditTourDetials] = useState(false);
+  const [showDeleteTour, setShowDeleteTour] = useState(false);
 
   const handleSidebarItemClick = () => {
     setShowWelcome(false);
@@ -39,6 +43,8 @@ const AdminDashboard = () => {
     setshowBookingHistory(false);
     setShowEditCard(false);
     setShowTestimonials(false);
+    setShowEditTourDetials(false);
+    setShowDeleteTour(false);
   };
 
   const handleAddBikeWizardClick = () => {
@@ -52,6 +58,8 @@ const AdminDashboard = () => {
     setshowBookingHistory(false);
     setShowEditCard(false);
     setShowTestimonials(false);
+    setShowEditTourDetials(false);
+    setShowDeleteTour(false);
   };
 
   const handleBikeDetails = () => {
@@ -65,6 +73,8 @@ const AdminDashboard = () => {
     setshowBookingHistory(false);
     setShowEditCard(false);
     setShowTestimonials(false);
+    setShowEditTourDetials(false);
+    setShowDeleteTour(false);
   };
 
   const handleManageBike = () => {
@@ -78,6 +88,8 @@ const AdminDashboard = () => {
     setshowBookingHistory(false);
     setShowEditCard(false);
     setShowTestimonials(false);
+    setShowEditTourDetials(false);
+    setShowDeleteTour(false);
   };
 
   const handlePendingBooking = () => {
@@ -91,6 +103,8 @@ const AdminDashboard = () => {
     setshowBookingHistory(false);
     setShowEditCard(false);
     setShowTestimonials(false);
+    setShowEditTourDetials(false);
+    setShowDeleteTour(false);
   };
 
   const handleApproveBooking = () => {
@@ -104,6 +118,8 @@ const AdminDashboard = () => {
     setshowBookingHistory(false);
     setShowEditCard(false);
     setShowTestimonials(false);
+    setShowEditTourDetials(false);
+    setShowDeleteTour(false);
   };
 
   const handleBookingHistory = () => {
@@ -117,6 +133,8 @@ const AdminDashboard = () => {
     setShowWelcome(false);
     setShowEditCard(false);
     setShowTestimonials(false);
+    setShowEditTourDetials(false);
+    setShowDeleteTour(false);
   };
 
   const handleEditCard = () => {
@@ -130,10 +148,44 @@ const AdminDashboard = () => {
     setShowBikeWizard(false);
     setShowWelcome(false);
     setShowTestimonials(false);
+    setShowEditTourDetials(false);
+    setShowDeleteTour(false);
   };
 
   const handleTestimonials = () => {
     setShowTestimonials(true);
+    setShowEditCard(false);
+    setshowBookingHistory(false);
+    setshowPendingBooking(false);
+    setshowApproveBooking(false);
+    setShowManageBike(false);
+    setShowBikeDetails(false);
+    setShowTourForm(false);
+    setShowBikeWizard(false);
+    setShowWelcome(false);
+    setShowEditTourDetials(false);
+    setShowDeleteTour(false);
+  };
+
+  const handleEditTourDetails = () => {
+    setShowEditTourDetials(true);
+    setShowTestimonials(false);
+    setShowEditCard(false);
+    setshowBookingHistory(false);
+    setshowPendingBooking(false);
+    setshowApproveBooking(false);
+    setShowManageBike(false);
+    setShowBikeDetails(false);
+    setShowTourForm(false);
+    setShowBikeWizard(false);
+    setShowWelcome(false);
+    setShowDeleteTour(false);
+  };
+
+  const handleDeleteTour = () => {
+    setShowDeleteTour(true);
+    setShowEditTourDetials(false);
+    setShowTestimonials(false);
     setShowEditCard(false);
     setshowBookingHistory(false);
     setshowPendingBooking(false);
@@ -158,6 +210,8 @@ const AdminDashboard = () => {
         onBookingHistoryClick={handleBookingHistory}
         onEditCardClick={handleEditCard}
         onEditTestimonialClick={handleTestimonials}
+        onEditTourDetailsClick={handleEditTourDetails}
+        onDeleteTourClick={handleDeleteTour}
       />
       <div className="flex flex-col p-4 space-y-4">
         <Searchbar />
@@ -183,6 +237,12 @@ const AdminDashboard = () => {
         {showEditCard && <EditCard onClose={() => setShowEditCard(false)} />}
         {showEditTestimonials && (
           <EditTestimonials onClose={() => setShowTestimonials(false)} />
+        )}
+        {showEditTourDetails && (
+          <EditTourDetails onClose={() => setShowEditTourDetials(false)} />
+        )}
+        {showDeleteTour && (
+          <DeleteTour onClose={() => setShowDeleteTour(false)} />
         )}
         {showWelcome && !showTourForm && <Welcomepage />}
       </div>

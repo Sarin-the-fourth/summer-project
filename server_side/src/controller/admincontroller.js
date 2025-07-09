@@ -767,6 +767,7 @@ export const respond_booking = async (req, res) => {
     } else {
       booking.status = status;
     }
+
     await booking.save();
 
     return res.status(200).json({
@@ -942,6 +943,42 @@ export const assign_bikes = async (req, res) => {
   }
 };
 
+export const cancel_bookings_bike = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+    const { status } = req.body;
+
+    const updateData = { status };
+    if (status === "cancelled") {
+      updateData.assigned_bike = [];
+    }
+
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      bookingId,
+      updateData,
+      { new: true }
+    );
+    if (!updatedBooking) {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Booking updated successfully",
+      booking: updatedBooking,
+    });
+  } catch (error) {
+    console.error("Error updating booking:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 export const free_bikes_after_tour = async () => {
   const today = new Date();
 
@@ -958,5 +995,92 @@ export const free_bikes_after_tour = async () => {
 
     booking.status = "completed";
     await booking.save();
+  }
+};
+
+export const update_tour_info = async (req, res) => {
+  try {
+    const { tourId } = req.params;
+    const updateData = req.body;
+
+    if (!updateData || typeof updateData !== "object") {
+      return res.status(400).json({
+        success: false,
+        message: "No data provided for update",
+      });
+    }
+
+    if (!tourId) {
+      return res.status(400).json({
+        success: false,
+        message: "Tour ID is required",
+      });
+    }
+
+    const cleanedUpdateData = {};
+    Object.entries(updateData).forEach(([key, value]) => {
+      if (value !== "" && value !== undefined && value !== null) {
+        cleanedUpdateData[key] = value;
+      }
+    });
+
+    if (Object.keys(cleanedUpdateData).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No valid fields provided for update",
+      });
+    }
+
+    console.log("cleanedUpdateData:", cleanedUpdateData);
+
+    const updatedTour = await Tour.findByIdAndUpdate(
+      tourId,
+      { $set: cleanedUpdateData },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedTour) {
+      return res.status(404).json({
+        success: false,
+        message: "Tour not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Tour updated successfully",
+      tour: updatedTour,
+    });
+  } catch (error) {
+    console.log("Error in updating tour: ", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const delete_tour = async (req, res) => {
+  try {
+    const { tourId } = req.params;
+    const deleteTour = await Tour.findByIdAndDelete(tourId);
+
+    if (!deleteTour) {
+      return res.status(404).json({
+        success: false,
+        message: "Tour not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Tour Deleted Successfully!",
+    });
+  } catch (error) {
+    console.log("Error Deleting tour: ", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 };

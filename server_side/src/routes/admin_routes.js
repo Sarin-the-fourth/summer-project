@@ -18,6 +18,9 @@ import {
   updateCard,
   get_homepage,
   update_testimonials,
+  cancel_bookings_bike,
+  update_tour_info,
+  delete_tour,
 } from "../controller/admincontroller.js";
 import { respond_booking, get_bikes } from "../controller/admincontroller.js";
 import { updateProfile } from "../controller/authcontroller.js";
@@ -28,6 +31,8 @@ const router = Router();
 router.post("/add-tour", createTourWithItinerary);
 router.get("/tour/:tourId", getTourWithItinerary);
 router.get("/tours", get_all_tours);
+router.put("/update-tour-info/:tourId", update_tour_info);
+router.delete("/delete-tour/:tourId", delete_tour);
 
 router.post("/add-bike", add_bikes);
 router.delete("/delete-bike/:bike_number", delete_bike);
@@ -38,6 +43,8 @@ router.get("/bookings/approved", get_approved_bookings);
 router.get("/bookings/pending", get_pending_bookings);
 router.get("/bookings/confirmed", get_confirmed_bookings);
 router.patch("/respond-booking/:bookingId", respond_booking);
+router.patch("/cancel_bookings_bike/:bookingId", cancel_bookings_bike);
+
 router.post("/edit-booking/:bookingId", edit_booking);
 router.delete("/delete-pending-booking/:bookingId", delete_pending_bookings);
 

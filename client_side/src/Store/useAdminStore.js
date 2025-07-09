@@ -175,6 +175,18 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  freeAssignedBike: async (id, status) => {
+    try {
+      const res = await axiosInstance.patch(
+        `/admin/cancel_bookings_bike/${id}`,
+        { status }
+      );
+      toast.success(res.data.message);
+    } catch (error) {
+      console.log("Failed freeing assigned bikes: ", error);
+    }
+  },
+
   editBooking: async (id, updatedData) => {
     try {
       const res = await axiosInstance.post(
@@ -261,6 +273,35 @@ export const useAdminStore = create((set) => ({
       console.error("Error checking authentication:", error);
       toast.error("Failed to check authentication");
       set({ admin: null });
+    }
+  },
+
+  updateTour: async (tourId, updateData) => {
+    try {
+      const res = await axiosInstance.put(
+        `/admin/update-tour-info/${tourId}`,
+        updateData
+      );
+      if (res.data.success) {
+        console.log(res.data);
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log("Failed Updating Tour: ", error);
+      toast.error("Failed Updating Tour");
+    }
+  },
+
+  deleteTour: async (tourId) => {
+    try {
+      const res = await axiosInstance.delete(`/admin/delete-tour/${tourId}`);
+      if (res.data.success) {
+        console.log(res.data);
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log("Failed Deleting Tour: ", error);
+      toast.error("Failed Deleting Tour");
     }
   },
 }));

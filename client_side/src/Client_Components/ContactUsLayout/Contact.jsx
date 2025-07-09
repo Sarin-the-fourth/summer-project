@@ -25,6 +25,7 @@ const Contact = () => {
   const [loading, setloading] = useState();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     getAllTours();
     fetchBikes();
   }, []);

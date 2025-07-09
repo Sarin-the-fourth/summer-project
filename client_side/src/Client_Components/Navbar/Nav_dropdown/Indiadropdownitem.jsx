@@ -25,25 +25,6 @@ const Indiadropdownitem = () => {
           </li>
         ))
       )}
-
-      {/* <li className="p-2 rounded hover:bg-[#fdb913] hover:text-black transition">
-        <a href="#leh-ladakh" className="block">
-          <h3 className="font-bold text-[#212529]">Leh Ladakh Tour</h3>
-          <p className="font-poppins text-xs text-gray-600">
-            Embark on the breathtaking journey through Leh Ladakh's rugged
-            trails
-          </p>
-        </a>
-      </li>
-
-      <li className="p-2 rounded hover:bg-[#fdb913] hover:text-black transition">
-        <a href="#spiti-valley" className="block">
-          <h3 className="font-bold text-[#212529]">Spiti Valley Tour</h3>
-          <p className="font-poppins text-xs text-gray-600">
-            Traverse Spiti Valley's mystical landscapes
-          </p>
-        </a>
-      </li> */}
     </ul>
   );
 };

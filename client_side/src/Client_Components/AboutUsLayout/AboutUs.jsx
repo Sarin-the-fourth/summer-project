@@ -1,7 +1,11 @@
 import React from "react";
 import bgimage from "./../../assets/images/uppermustang2.png";
+import { useEffect } from "react";
 
 const AboutUs = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div>
       <div
