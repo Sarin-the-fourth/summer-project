@@ -13,6 +13,7 @@ const Sidebar = ({
   onEditTestimonialClick,
   onEditTourDetailsClick,
   onDeleteTourClick,
+  onEditItinerary,
 }) => {
   const [isTourOpen, setisTourOpen] = useState(false);
   const [isBikeOpen, setisBikeOpen] = useState(false);
@@ -93,6 +94,19 @@ const Sidebar = ({
                   Edit Tour details
                 </Link>
               </li>
+
+              <li className="hover:text-white">
+                <Link
+                  to="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onEditItinerary();
+                  }}
+                >
+                  Edit Itinerary
+                </Link>
+              </li>
+
               <li className="hover:text-white">
                 <Link
                   to="#"

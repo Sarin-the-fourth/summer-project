@@ -1084,3 +1084,37 @@ export const delete_tour = async (req, res) => {
     });
   }
 };
+
+export const update_itinerary = async (req, res) => {
+  try {
+    const { tourId, day } = req.params;
+    const updateData = req.body;
+
+    const updatedItinerary = await Itinerary.findOneAndUpdate(
+      { tour: tourId, day: Number(day) },
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!updatedItinerary) {
+      return res.status(404).json({
+        success: false,
+        message: "No itinerary found!",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Itinerary updated successfully",
+    });
+  } catch (error) {
+    console.log("Error Updating Itinerary: ", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};

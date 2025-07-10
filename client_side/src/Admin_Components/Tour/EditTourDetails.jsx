@@ -18,13 +18,23 @@ const EditTourDetails = () => {
     availability: "",
   });
 
+  const [loading, setloading] = useState(false);
+
   const handleSubmit = async () => {
     if (!selectedTourId) {
       alert("Please select a tour to update.");
       return;
     }
-    await updateTour(selectedTourId, formData);
-    console.log("Update Data: ", formData);
+
+    setloading(true);
+    try {
+      await updateTour(selectedTourId, formData);
+      console.log("Update Data: ", formData);
+    } catch (error) {
+      console.error("Error updating tour: ", error);
+    } finally {
+      setloading(false);
+    }
   };
 
   useEffect(() => {
@@ -139,9 +149,14 @@ const EditTourDetails = () => {
           <div className="flex justify-end pt-2">
             <button
               onClick={handleSubmit}
-              className="bg-gray-600 text-md font-montserrat text-white px-6 py-2 rounded-md hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:bg-gray-500 "
+              disabled={loading}
+              className={`${
+                loading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-gray-600 hover:bg-[#fdb913]"
+              } text-md font-montserrat text-white px-6 py-2 rounded-md transition-colors duration-200 focus:outline-none`}
             >
-              Update
+              {loading ? "Updating..." : "Update"}
             </button>
           </div>
         </div>

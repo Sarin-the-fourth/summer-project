@@ -304,4 +304,20 @@ export const useAdminStore = create((set) => ({
       toast.error("Failed Deleting Tour");
     }
   },
+
+  updateItinerary: async (tourId, daynumber, updateData) => {
+    try {
+      const res = await axiosInstance.patch(
+        `/admin/update-itinerary/${tourId}/${daynumber}`,
+        updateData
+      );
+      if (res.data.success) {
+        console.log(res.data);
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log("Error Updating Itinerary: ", error);
+      toast.error("Failed to Update Itinerary");
+    }
+  },
 }));

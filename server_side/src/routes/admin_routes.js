@@ -21,6 +21,7 @@ import {
   cancel_bookings_bike,
   update_tour_info,
   delete_tour,
+  update_itinerary,
 } from "../controller/admincontroller.js";
 import { respond_booking, get_bikes } from "../controller/admincontroller.js";
 import { updateProfile } from "../controller/authcontroller.js";
@@ -33,6 +34,7 @@ router.get("/tour/:tourId", getTourWithItinerary);
 router.get("/tours", get_all_tours);
 router.put("/update-tour-info/:tourId", update_tour_info);
 router.delete("/delete-tour/:tourId", delete_tour);
+router.patch("/update-itinerary/:tourId/:day", update_itinerary);
 
 router.post("/add-bike", add_bikes);
 router.delete("/delete-bike/:bike_number", delete_bike);
